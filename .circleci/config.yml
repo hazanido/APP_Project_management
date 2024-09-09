@@ -1,0 +1,36 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@5.1.0
+
+jobs:
+  build_and_test_backend:
+    docker:
+      - image: circleci/node:16.10  
+    steps:
+      - checkout  
+      - run:
+          name: Install backend dependencies
+          command: npm --prefix ./backend/ install  
+      - run:
+          name: Run backend tests
+          command: npm --prefix ./backend/ run test  
+
+  deploy_backend:
+    docker:
+      - image: circleci/node:16.10
+    steps:
+      - checkout
+      - run:
+          name: Trigger deploy on Render
+          command: |
+            curl -X POST "https://api.render.com/deploy/srv-<your-service-id>?key=<your-api-key>" # הוספה של הכתובת של הראנדר
+
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - build_and_test_backend  
+      - deploy_backend:
+          requires:
+            - build_and_test_backend  
