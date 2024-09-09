@@ -24,7 +24,7 @@ jobs:
       - run:
           name: Trigger deploy on Render
           command: |
-            curl -X POST "https://api.render.com/deploy/srv-<your-service-id>?key=<your-api-key>" # הוספה של הכתובת של הראנדר
+            curl -X POST "https://app-project-management.onrender.com"
 
 workflows:
   version: 2
