@@ -11,10 +11,10 @@ jobs:
       - checkout  
       - run:
           name: Install backend dependencies
-          command: npm --prefix ./backend/ install  
+          command: npm --prefix ./Backend/ install  
       - run:
           name: Run backend tests
-          command: npm --prefix ./backend/ run test  
+          command: npm --prefix ./Backend/ run test  
 
   deploy_backend:
     docker:
