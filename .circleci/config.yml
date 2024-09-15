@@ -13,6 +13,11 @@ jobs:
           name: Install backend dependencies
           command: npm --prefix ./Backend/ install  
       - run:
+          name: Set environment variables 
+          command: |
+            echo "Setting Firebase environment variable"
+            echo $FIREBASE_SERVICE_ACCOUNT > ./Backend/.env # יצירת קובץ env
+      - run:
           name: Run backend tests
           command: npm --prefix ./Backend/ run test  
 
@@ -21,6 +26,11 @@ jobs:
       - image: circleci/node:16.10
     steps:
       - checkout
+      - run:
+          name: Set environment variables for deployment 
+          command: |
+            echo "Setting Firebase environment variable for deployment"
+            echo $FIREBASE_SERVICE_ACCOUNT > ./Backend/.env
       - run:
           name: Trigger deploy on Render
           command: |
