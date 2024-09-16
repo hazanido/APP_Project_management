@@ -1,4 +1,4 @@
-const { db } = require('../firebase'); 
+const { db } = require('../../firebase'); 
 const bcrypt = require('bcrypt');
 
 class User {
@@ -19,9 +19,14 @@ class User {
 
     
     static async checkUniqueEmail(email) {
-        const snapshot = await db.collection('users').where('email', '==', email).get();
-        if (!snapshot.empty) {
-            throw new Error('Email must be unique.');
+        try {
+            const snapshot = await db.collection('users').where('email', '==', email).get();
+            if (!snapshot.empty) {
+                throw new Error('Email must be unique.');
+            }
+        } catch (error) {
+            console.error('Error checking email uniqueness:', error);
+            throw error; // זריקת השגיאה למי שקורא לפונקציה הזו
         }
     }
 }
@@ -32,20 +37,47 @@ class UserModel {
     }
 
     async createUser(userData) {
-        await User.checkUniqueEmail(userData.email);
-        const hashedPassword = await bcrypt.hash(userData.password, 10);
-        const user = new User(
-            userData.id,
-            userData.name,
-            userData.email,
-            hashedPassword,
-            userData.age,
-            userData.taskId,
-            userData.projectId,
-            userData.messageId
-        );
-        return this.db.collection('users').doc(user.id).set(user);
+        try {
+            console.log('Checking if email is unique:', userData.email);
+            await User.checkUniqueEmail(userData.email);
+
+            console.log('Hashing password for user:', userData.email);
+            const hashedPassword = await bcrypt.hash(userData.password, 10);
+
+            // יצירת האובייקט 'User' עם הנתונים
+            const user = new User(
+                userData.id,
+                userData.name,
+                userData.email,
+                hashedPassword,
+                userData.age,
+                userData.taskId,
+                userData.projectId,
+                userData.messageId
+            );
+
+            // המרת ה-User לאובייקט פשוט כדי לשמור ב-Firestore
+            const userPlainObject = {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                password: user.password,
+                age: user.age,
+                taskId: user.taskId,
+                projectId: user.projectId,
+                messageId: user.messageId
+            };
+
+            console.log('Saving user to database:', user.email);
+            return this.db.collection('users').doc(user.id).set(userPlainObject); // שמירה של האובייקט הפשוט
+
+        } catch (error) {
+            console.error('Error creating user:', error);
+            throw error;
+        }
     }
+
+
 
     async getUserById(userId) {
         const user = await this.db.collection('users').doc(userId).get();
