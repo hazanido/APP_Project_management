@@ -1,5 +1,8 @@
 const UserModel = require('../Model/userModel');
+const { OAuth2Client } = require('google-auth-library');
 const jwt = require('jsonwebtoken');
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const userModel = new UserModel();
 const secretKey = process.env.JWT_SECRET || 'your_fallback_secret_key'; 
 
@@ -54,6 +57,43 @@ const loginUser = async (req, res) => {
         res.status(200).send({ message: 'Login successful', token });
     } catch (error) {
         res.status(500).send({ message: 'Login failed', error });
+    }
+};
+
+const googleLogin = async (req, res) => {
+    try {
+        const { token } = req.body; 
+        const ticket = await client.verifyIdToken({
+            idToken: token,
+            audience: process.env.GOOGLE_CLIENT_ID,
+        });
+
+        const payload = ticket.getPayload();
+        const { sub: googleId, email, name } = payload;
+
+      
+        let user = await userModel.findUserByEmail(email);
+        
+        
+        if (!user) {
+            user = await userModel.createUser({
+                id: googleId,
+                name,
+                email,
+                password: null, 
+                age: null,
+                taskId: [],
+                projectId: [],
+                messageId: [],
+            });
+        }
+
+
+        const jwtToken = jwt.sign({ id: user.id, email: user.email }, secretKey, { expiresIn: '1h' });
+
+        res.status(200).send({ message: 'Login successful', token: jwtToken });
+    } catch (error) {
+        res.status(500).send({ message: 'Google login failed', error });
     }
 };
 
@@ -118,5 +158,6 @@ module.exports = {
     getUserById,
     updateUser,
     deleteUser,
-    loginUser
+    loginUser,
+    googleLogin
 };

@@ -16,4 +16,6 @@ router.put('/:id',authenticateToken, userController.updateUser);
 
 router.delete('/:id', userController.deleteUser);
 
+router.post('/google-login', userController.googleLogin);
+
 module.exports = router;
