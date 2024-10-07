@@ -1,5 +1,5 @@
 const { db } = require('../../firebase'); 
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 class User {
     constructor(id, name, email, password, age = null, taskId = [], projectId = [], messageId = []) {
@@ -26,7 +26,7 @@ class User {
             }
         } catch (error) {
             console.error('Error checking email uniqueness:', error);
-            throw error; // זריקת השגיאה למי שקורא לפונקציה הזו
+            throw error; 
         }
     }
 }
@@ -38,13 +38,9 @@ class UserModel {
 
     async createUser(userData) {
         try {
-            console.log('Checking if email is unique:', userData.email);
             await User.checkUniqueEmail(userData.email);
-
-            console.log('Hashing password for user:', userData.email);
             const hashedPassword = await bcrypt.hash(userData.password, 10);
 
-            // יצירת האובייקט 'User' עם הנתונים
             const user = new User(
                 userData.id,
                 userData.name,
@@ -56,7 +52,6 @@ class UserModel {
                 userData.messageId
             );
 
-            // המרת ה-User לאובייקט פשוט כדי לשמור ב-Firestore
             const userPlainObject = {
                 id: user.id,
                 name: user.name,
@@ -69,7 +64,7 @@ class UserModel {
             };
 
             console.log('Saving user to database:', user.email);
-            return this.db.collection('users').doc(user.id).set(userPlainObject); // שמירה של האובייקט הפשוט
+            return this.db.collection('users').doc(user.id).set(userPlainObject);
 
         } catch (error) {
             console.error('Error creating user:', error);

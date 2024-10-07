@@ -8,7 +8,7 @@ const handleErrorResponse = (res, status, message, error) => {
 const createUser = async (req, res) => {
     try {
         const { id, name, email, password, age, taskId, projectId, messageId } = req.body;
-        console.log(req.body); // לבדוק אם כל הנתונים נשלחים כראוי
+        
 
         // יצירת משתמש חדש ושמירתו ב-Firestore
         const newUser = await userModel.createUser({
@@ -22,18 +22,19 @@ const createUser = async (req, res) => {
             messageId
         });
 
-        // החזרת המידע של המשתמש שנשמר בתגובה, כולל ID
-        const savedUser = {
-            id: id, // כאן אנו מוסיפים את ה-ID
-            name,
-            email,
-            age,
-            taskId,
-            projectId,
-            messageId
-        };
+        // // החזרת המידע של המשתמש שנשמר בתגובה, כולל ID
+        // const savedUser = {
+        //     id: id, // כאן אנו מוסיפים את ה-ID
+        //     name,
+        //     email,
+        //     age,
+        //     taskId,
+        //     projectId,
+        //     messageId
+        // };
 
-        res.status(201).send({ message: 'User created successfully', user: savedUser });
+        res.status(201).send({ message: 'User created successfully', user: newUser });
+        console.log('User created successfully', newUser);
     } catch (error) {
         handleErrorResponse(res, 400, 'Error creating user', error);
     }
