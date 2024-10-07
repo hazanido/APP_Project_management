@@ -72,8 +72,16 @@ class UserModel {
         }
     }
 
-
-
+    async findUserByEmail(email) {
+        const snapshot = await this.db.collection('users').where('email', '==', email).get();
+        if (snapshot.empty) {
+            return null;
+        }
+        return snapshot.docs[0].data();
+    }
+    async verifyPassword(enteredPassword, storedPassword) {
+        return bcrypt.compare(enteredPassword, storedPassword);
+    }
     async getUserById(userId) {
         const user = await this.db.collection('users').doc(userId).get();
         return user.exists ? user.data() : null;
