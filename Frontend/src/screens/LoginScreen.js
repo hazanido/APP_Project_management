@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, TextInput, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import axios from '../api/backendAPI';
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -13,7 +14,9 @@ const LoginScreen = ({ navigation }) => {
         email,
         password,
       });
-      // add test and token to axios headers
+      
+      const token = response.data.token; 
+      await AsyncStorage.setItem('userToken', token);
       navigation.navigate('HomeScreen');
     } catch (error) {
       setErrorMessage('התחברות נכשלה. בדוק את פרטי הכניסה.');
@@ -23,14 +26,14 @@ const LoginScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <TextInput
-           style={styles.input}
-           placeholder="מייל"
-           value={email}
-           onChangeText={setEmail}
-           keyboardType="email-address" 
-           autoCapitalize="none" 
-           autoCorrect={false} 
-           returnKeyType="next" 
+        style={styles.input}
+        placeholder="מייל"
+        value={email}
+        onChangeText={setEmail}
+        keyboardType="email-address" 
+        autoCapitalize="none" 
+        autoCorrect={false} 
+        returnKeyType="next" 
       />
       <TextInput
         style={styles.input}
@@ -41,12 +44,10 @@ const LoginScreen = ({ navigation }) => {
       />
       {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
 
-      
       <TouchableOpacity onPress={handleLogin}>
         <Image source={require('../../assets/login_he.png')} style={styles.buttonImage} />
       </TouchableOpacity>
 
-      
       <TouchableOpacity onPress={() => navigation.navigate('RegisterScreen')}>
         <Image source={require('../../assets/Register_he.png')} style={styles.buttonImage} />
       </TouchableOpacity>
