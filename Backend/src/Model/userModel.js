@@ -1,5 +1,6 @@
-const { db } = require('../../firebase'); 
+const { db } = require('../../firebase');
 const bcrypt = require('bcryptjs');
+const { v4: uuidv4 } = require('uuid');  
 
 class User {
     constructor(id, name, email, password, age = null, taskId = [], projectId = [], messageId = []) {
@@ -12,37 +13,40 @@ class User {
         this.email = email;
         this.password = password;
         this.age = age;
-        this.taskId = taskId;
-        this.projectId = projectId;
-        this.messageId = messageId;
+        this.taskId = taskId.length ? taskId : [];  
+        this.projectId = projectId.length ? projectId : [];
+        this.messageId = messageId.length ? messageId : [];
     }
 
-    
     static async checkUniqueEmail(email) {
         try {
             const snapshot = await db.collection('users').where('email', '==', email).get();
             if (!snapshot.empty) {
-                throw new Error('Email must be unique.');
+                throw new Error('Email already exists.');
             }
         } catch (error) {
             console.error('Error checking email uniqueness:', error);
-            throw error; 
+            throw error;
         }
     }
 }
 
 class UserModel {
     constructor() {
-        this.db = db; 
+        this.db = db;
     }
 
     async createUser(userData) {
         try {
             await User.checkUniqueEmail(userData.email);
+
+            
+            const userId = userData.id || uuidv4();
+
             const hashedPassword = await bcrypt.hash(userData.password, 10);
 
             const user = new User(
-                userData.id,
+                userId,
                 userData.name,
                 userData.email,
                 hashedPassword,
@@ -79,9 +83,11 @@ class UserModel {
         }
         return snapshot.docs[0].data();
     }
+
     async verifyPassword(enteredPassword, storedPassword) {
         return bcrypt.compare(enteredPassword, storedPassword);
     }
+
     async getUserById(userId) {
         const user = await this.db.collection('users').doc(userId).get();
         return user.exists ? user.data() : null;
