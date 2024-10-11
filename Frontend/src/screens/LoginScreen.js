@@ -9,7 +9,7 @@ const LoginScreen = ({ navigation }) => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('/login', {
+      const response = await axios.post('/users/login', {
         email,
         password,
       });
