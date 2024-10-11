@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { View, TextInput, Button, Text } from 'react-native';
+import { View, TextInput, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import axios from '../api/backendAPI';
 
 const LoginScreen = ({ navigation }) => {
@@ -14,8 +13,7 @@ const LoginScreen = ({ navigation }) => {
         email,
         password,
       });
-      // add token to local storage
-      console.log(response.data);
+      // add test and token to axios headers
       navigation.navigate('HomeScreen');
     } catch (error) {
       setErrorMessage('התחברות נכשלה. בדוק את פרטי הכניסה.');
@@ -23,24 +21,67 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <View>
+    <View style={styles.container}>
       <TextInput
-        placeholder="מייל"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
+           style={styles.input}
+           placeholder="מייל"
+           value={email}
+           onChangeText={setEmail}
+           keyboardType="email-address" 
+           autoCapitalize="none" 
+           autoCorrect={false} 
+           returnKeyType="next" 
       />
       <TextInput
+        style={styles.input}
         placeholder="סיסמה"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
       />
-      {errorMessage ? <Text>{errorMessage}</Text> : null}
-      <Button title="התחבר" onPress={handleLogin} />
+      {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
+
+      
+      <TouchableOpacity onPress={handleLogin}>
+        <Image source={require('../../assets/login_he.png')} style={styles.buttonImage} />
+      </TouchableOpacity>
+
+      
+      <TouchableOpacity onPress={() => navigation.navigate('RegisterScreen')}>
+        <Image source={require('../../assets/Register_he.png')} style={styles.buttonImage} />
+      </TouchableOpacity>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    backgroundColor: '#fff',
+  },
+  input: {
+    width: '80%', 
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    textAlign: 'center', 
+  },
+  error: {
+    color: 'red',
+    marginBottom: 10,
+  },
+  buttonImage: {
+    width: 200, 
+    height: 50,
+    marginVertical: 10, 
+    borderRadius: 15, 
+    overflow: 'hidden',
+  },
+});
 
 export default LoginScreen;
