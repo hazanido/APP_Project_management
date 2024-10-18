@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from '../api/backendAPI'; 
+import axios from '../api/backendAPI';
 
 const ProjectListScreen = () => {
   const navigation = useNavigation();
@@ -66,38 +66,38 @@ const ProjectListScreen = () => {
       <TouchableOpacity onPress={() => navigation.navigate('CreateProjectScreen')}>
         <Image
           source={require('../../assets/Create a new project_he.png')} 
-          style={styles.buttonImage}
+          style={styles.buttonImageLarge} 
+        />
+      </TouchableOpacity>
+
+      
+      <TouchableOpacity onPress={() => navigation.navigate('MyTasksScreen')}>
+        <Image
+          source={require('../../assets/my tasks_he.png')} 
+          style={styles.buttonImageLarge} 
         />
       </TouchableOpacity>
 
       
       <View style={styles.buttonRow}>
-        
-        <TouchableOpacity onPress={() => navigation.navigate('MyTasksScreen')}>
-          <Image
-            source={require('../../assets/my tasks_he.png')} 
-            style={styles.smallButtonImage}
-          />
-        </TouchableOpacity>
-
         <TouchableOpacity onPress={() => navigation.navigate('MessagesScreen')}>
           <Image
             source={require('../../assets/Message box_he.png')} 
-            style={styles.smallButtonImage}
+            style={styles.smallButtonImageLarge} 
           />
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => navigation.navigate('ProfileScreen')}>
           <Image
             source={require('../../assets/profile_he.png')} 
-            style={styles.smallButtonImage}
+            style={styles.smallButtonImageLarge} 
           />
         </TouchableOpacity>
 
         <TouchableOpacity onPress={handleLogout}>
           <Image
             source={require('../../assets/logout_he.png')} 
-            style={styles.smallButtonImage}
+            style={styles.smallButtonImageLarge} 
           />
         </TouchableOpacity>
       </View>
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     color: 'gray',
     marginTop: 20,
   },
-  buttonImage: {
+  buttonImageLarge: {
     width: 250,
     height: 60,
     marginTop: 20,
@@ -142,12 +142,12 @@ const styles = StyleSheet.create({
   buttonRow: {
     flexDirection: 'row-reverse', 
     justifyContent: 'space-between',
-    marginTop: 30,
-    width: '90%',
+    marginTop: 20,
+    width: '80%',
   },
-  smallButtonImage: {
-    width: 60,
-    height: 60,
+  smallButtonImageLarge: {
+    width: 90, 
+    height: 50,
     borderRadius: 15,
     marginHorizontal: 5,
     overflow: 'hidden',

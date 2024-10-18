@@ -15,8 +15,10 @@ const LoginScreen = ({ navigation }) => {
         password,
       });
       
-      const token = response.data.token; 
+      const { token, userId } = response.data;
+      
       await AsyncStorage.setItem('userToken', token);
+      await AsyncStorage.setItem('userId', userId);
       navigation.navigate('ProjectListScreen');
     } catch (error) {
       setErrorMessage('התחברות נכשלה. בדוק את פרטי הכניסה.');
