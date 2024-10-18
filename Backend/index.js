@@ -3,6 +3,7 @@ require('dotenv').config();
 const cors = require('cors');
 const { db } = require('./firebase'); 
 const userRoutes = require('./src/Routes/userRoute'); 
+const projectRoutes = require('./src/Routes/projectRoute');
 
 const app = express();
 const port = process.env.PORT || 3000; 
@@ -10,6 +11,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use('/users', userRoutes);
+app.use('/projects', projectRoutes);
 
 app.get('/', (req, res) => {
   res.send('Hello World!');

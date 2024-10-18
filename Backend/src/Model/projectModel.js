@@ -1,92 +1,108 @@
-class projectId {
-    constructor(id, name, description, userId, taskId) {
+const { db } = require('../../firebase');
+const { v4: uuidv4 } = require('uuid'); 
+
+class Project {
+    constructor(id, name, description, startDate, endDate, managerId, members = [], tasks = []) {
+        if (!id || !name || !managerId) {
+            throw new Error('ID, name, and managerId are required fields.');
+        }
+
         this.id = id;
         this.name = name;
         this.description = description;
-        this.userId = userId;
-        this.taskId = taskId.length ? taskId : [];
+        this.startDate = startDate || null;  
+        this.endDate = endDate || null;      
+        this.managerId = managerId;  
+        this.members = Array.isArray(members) ? members : [];  
+        this.tasks = Array.isArray(tasks) ? tasks : [];        
     }
+
+    static async checkUniqueProjectName(name) {
+        try {
+            const snapshot = await db.collection('projects').where('name', '==', name).get();
+            if (!snapshot.empty) {
+                throw new Error('Project name must be unique.');
+            }
+            console.log('Project name is unique:', name);
+        } catch (error) {
+            console.error('Error checking project name uniqueness:', error);
+            throw error; 
+        }
+    }
+    
+    
 }
 
-class projectModel {
+class ProjectModel {
     constructor() {
         this.db = db;
     }
 
     async createProject(projectData) {
         try {
-            const projectId = projectData.id || uuidv4();
-
-            const project = new projectId(
-                projectId,
+            await Project.checkUniqueProjectName(projectData.name);
+    
+            const project = new Project(
+                uuidv4(), 
                 projectData.name,
                 projectData.description,
-                projectData.userId,
-                projectData.taskId
+                projectData.startDate,
+                projectData.endDate,
+                projectData.managerId,
+                projectData.members,
+                projectData.tasks
             );
-
+    
             const projectPlainObject = {
                 id: project.id,
                 name: project.name,
                 description: project.description,
-                userId: project.userId,
-                taskId: project.taskId
+                startDate: project.startDate,
+                endDate: project.endDate,
+                managerId: project.managerId,
+                members: project.members,
+                tasks: project.tasks
             };
-
-            await this.db.collection('projects').doc(projectId).set(projectPlainObject);
-
+    
+            console.log('Saving project to database:', project.name);
+            await this.db.collection('projects').doc(project.id).set(projectPlainObject);
             return projectPlainObject;
         } catch (error) {
             console.error('Error creating project:', error);
             throw error;
         }
     }
-
-    async getProjectById(projectId) {
-        try {
-            const project = await this.db.collection('projects').doc(projectId).get();
-            return project.data();
-        } catch (error) {
-            console.error('Error fetching project by ID:', error);
-            throw error;
-        }
+    
+    async getProjectsByUser(userId) {
+        const snapshot = await this.db.collection('projects').where('managerId', '==', userId).get();
+        const projects = [];
+        snapshot.forEach(doc => projects.push(doc.data()));
+        return projects;
     }
+    
 
-    async updateProject(projectData) {
-        try {
-            const projectId = projectData.id;
-
-            const project = new projectId(
-                projectId,
-                projectData.name,
-                projectData.description,
-                projectData.userId,
-                projectData.taskId
-            );
-
-            const projectPlainObject = {
-                id: project.id,
-                name: project.name,
-                description: project.description,
-                userId: project.userId,
-                taskId: project.taskId
-            };
-
-            await this.db.collection('projects').doc(projectId).set(projectPlainObject);
-
-            return projectPlainObject;
-        } catch (error) {
-            console.error('Error updating project:', error);
-            throw error;
+    async findProjectById(projectId) {
+        if (!projectId) {
+            throw new Error('Project ID is required');
         }
+        const snapshot = await this.db.collection('projects').doc(projectId).get();
+        if (!snapshot.exists) {
+            throw new Error('Project not found');
+        }
+        return snapshot.data();
+    }
+    
+
+    async updateProject(project) {
+        if (!project.id) throw new Error('Project ID is required');  
+        await this.db.collection('projects').doc(project.id).update(project);
+        return project;
     }
 
     async deleteProject(projectId) {
-        try {
-            await this.db.collection('projects').doc(projectId).delete();
-        } catch (error) {
-            console.error('Error deleting project:', error);
-            throw error;
-        }
+        if (!projectId) throw new Error('Project ID is required');  
+        await this.db.collection('projects').doc(projectId).delete();
     }
 }
+
+module.exports = ProjectModel;

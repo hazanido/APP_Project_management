@@ -6,7 +6,8 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "test": "echo \"No tests yet\"",
-    "testuser": "jest --detectOpenHandles --forceExit ./tests/user.test.js"
+    "testuser": "jest --detectOpenHandles --forceExit ./tests/user.test.js",
+    "testproject": "jest --detectOpenHandles --forceExit ./tests/project.test.js"
   },
   "keywords": [],
   "author": "ido and sharon",
