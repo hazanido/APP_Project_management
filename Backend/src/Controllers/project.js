@@ -1,5 +1,7 @@
 const ProjectModel = require('../Model/projectModel');
+const UserModel = require('../Model/userModel'); 
 const projectModel = new ProjectModel();
+const userModel = new UserModel();
 
 
 const createProject = async (req, res) => {
@@ -20,6 +22,11 @@ const createProject = async (req, res) => {
             tasks
         });
 
+        await userModel.updateUser({
+            id: managerId,
+            projectId: newProject.id  
+        });
+
         res.status(201).json({ message: 'Project created successfully', project: newProject });
     } catch (error) {
         console.error('Error creating project:', error);
@@ -28,9 +35,14 @@ const createProject = async (req, res) => {
 };
 
 
+
 const getProjectById = async (req, res) => {
     try {
-        const { projectId } = req.params;
+        const { projectId } = req.params; 
+        if (!projectId) {
+            return res.status(400).json({ message: 'Project ID is required' });
+        }
+
         const project = await projectModel.findProjectById(projectId);
 
         if (!project) {
@@ -45,20 +57,17 @@ const getProjectById = async (req, res) => {
 };
 
 
+
+
 const updateProject = async (req, res) => {
     try {
         const { projectId } = req.params;
-        const { name, description, startDate, endDate, managerId, members, tasks } = req.body;
+        if (!projectId) {
+            return res.status(400).json({ message: 'Project ID is required' });
+        }
 
-        const updatedProject = {
-            name,
-            description,
-            startDate,
-            endDate,
-            managerId,
-            members,
-            tasks
-        };
+        const { name, description, startDate, endDate, managerId, members, tasks } = req.body;
+        const updatedProject = { name, description, startDate, endDate, managerId, members, tasks };
 
         await projectModel.updateProject({ id: projectId, ...updatedProject });
         res.status(200).json({ message: 'Project updated successfully' });
@@ -69,9 +78,14 @@ const updateProject = async (req, res) => {
 };
 
 
+
+
 const deleteProject = async (req, res) => {
     try {
         const { projectId } = req.params;
+        if (!projectId) {
+            return res.status(400).json({ message: 'Project ID is required' });
+        }
 
         await projectModel.deleteProject(projectId);
         res.status(200).json({ message: 'Project deleted successfully' });
@@ -80,6 +94,8 @@ const deleteProject = async (req, res) => {
         res.status(500).json({ message: 'Error deleting project', error: error.message });
     }
 };
+
+
 
 
 const getProjectsByUser = async (req, res) => {

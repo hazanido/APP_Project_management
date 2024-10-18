@@ -12,11 +12,14 @@ const ProjectListScreen = () => {
   const fetchProjects = async () => {
     try {
       const token = await AsyncStorage.getItem('userToken'); 
-      const response = await axios.get('/projects', {
+      const userId = await AsyncStorage.getItem('userId'); 
+      
+      const response = await axios.get(`/projects/user/${userId}`, { 
         headers: {
           Authorization: `Bearer ${token}`, 
         },
       });
+  
       setProjects(response.data); 
     } catch (error) {
       console.error('Error fetching projects:', error);
@@ -35,7 +38,7 @@ const ProjectListScreen = () => {
   };
 
   const renderProject = ({ item }) => (
-    <TouchableOpacity onPress={() => navigation.navigate('ProjectDetails', { projectId: item.id })}>
+    <TouchableOpacity onPress={() => navigation.navigate('ProjectDetailsScreen', { projectId: item.id })}>
       <Text style={styles.projectItem}>{item.name}</Text>
     </TouchableOpacity>
   );
@@ -108,8 +111,8 @@ const ProjectListScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    paddingTop: 50,
+    justifyContent: 'center', // ממרכז את התוכן לאורך הציר האנכי
+    alignItems: 'center', // ממרכז את התוכן לאורך הציר האופקי
     backgroundColor: '#fff',
   },
   title: {
@@ -117,6 +120,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   projectList: {
+    flex: 1,
     width: '80%',
   },
   projectItem: {
@@ -135,7 +139,7 @@ const styles = StyleSheet.create({
   buttonImageLarge: {
     width: 250,
     height: 60,
-    marginTop: 20,
+    marginTop: 20, // מאפשר רווח בין הכפתורים
     borderRadius: 15,
     overflow: 'hidden',
   },
@@ -158,5 +162,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
+
 
 export default ProjectListScreen;
