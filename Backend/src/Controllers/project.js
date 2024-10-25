@@ -22,10 +22,14 @@ const createProject = async (req, res) => {
             tasks
         });
 
-        await userModel.updateUser({
-            id: managerId,
-            projectId: newProject.id  
-        });
+        await userModel.addProjectToUser(
+             managerId,newProject.id  
+        );
+         const memberEmails = typeof members === 'string' ? members.split(',').map(email => email.trim()) : members;
+
+         for (const email of memberEmails) {
+             await userModel.addProjectToUserByEmail(email, newProject.id);
+         }
 
         res.status(201).json({ message: 'Project created successfully', project: newProject });
     } catch (error) {
@@ -107,6 +111,7 @@ const getProjectsByUser = async (req, res) => {
         if (!projects || projects.length === 0) {
             return res.status(404).json({ message: 'No projects found for this user' });
         }
+        console.log("Project IDs for user before update:", req.params);
 
         res.status(200).json(projects);
     } catch (error) {

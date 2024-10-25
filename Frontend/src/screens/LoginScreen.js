@@ -1,27 +1,49 @@
 import React, { useState } from 'react';
 import { View, TextInput, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import axios from '../api/backendAPI';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
+import { googleLogin } from '../api/googleAPI'; 
+import * as Google from 'expo-auth-session/providers/google';
+import axios from '../api/backendAPI';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
+  // הגדרת Google Sign-In עם Expo
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    expoClientId: 'YOUR_EXPO_CLIENT_ID',
+    androidClientId: 'YOUR_ANDROID_CLIENT_ID',
+    iosClientId: 'YOUR_IOS_CLIENT_ID',
+  });
+
+  // התחברות רגילה עם שם משתמש וסיסמה
   const handleLogin = async () => {
     try {
-      const response = await axios.post('/users/login', {
-        email,
-        password,
-      });
-      
+      const response = await axios.post('/users/login', { email, password });
       const { token, userId } = response.data;
-      
       await AsyncStorage.setItem('userToken', token);
       await AsyncStorage.setItem('userId', userId);
       navigation.navigate('ProjectListScreen');
     } catch (error) {
       setErrorMessage('התחברות נכשלה. בדוק את פרטי הכניסה.');
+    }
+  };
+
+  // התחברות עם Google
+  const handleGoogleLogin = async () => {
+    try {
+      const result = await promptAsync(); // קבלת תוצאת ההתחברות מ-Google
+      if (result.type === 'success') {
+        const { id_token } = result.params;
+        const { token } = await googleLogin(id_token); // שליחת ה-token לשרת
+        await AsyncStorage.setItem('userToken', token); // שמירת ה-token
+        navigation.navigate('ProjectListScreen'); // מעבר למסך הפרויקטים
+      } else {
+        setErrorMessage('התחברות עם Google נכשלה.');
+      }
+    } catch (error) {
+      setErrorMessage('שגיאה בהתחברות עם Google.');
     }
   };
 
@@ -52,6 +74,10 @@ const LoginScreen = ({ navigation }) => {
 
       <TouchableOpacity onPress={() => navigation.navigate('RegisterScreen')}>
         <Image source={require('../../assets/Register_he.png')} style={styles.buttonImage} />
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={handleGoogleLogin}>
+        <Image source={require('../../assets/google login_he.png')} style={styles.buttonImage} />
       </TouchableOpacity>
     </View>
   );

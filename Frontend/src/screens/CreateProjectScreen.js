@@ -66,7 +66,7 @@ const CreateProjectScreen = ({ navigation }) => {
       />
       <TextInput
         style={styles.input}
-        placeholder="משתתפי הפרויקט (מופרדים בפסיקים)"
+        placeholder="מייל של משתתפי הפרויקט (מופרדים בפסיקים)"
         value={members}
         onChangeText={setMembers}
       />

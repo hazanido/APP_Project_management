@@ -110,7 +110,28 @@ class UserModel {
             throw error;
         }
     }
-    
+    async addProjectToUser(userId, projectId) {
+        const user = await this.getUserById(userId);
+        if (!user) {
+            throw new Error('User not found');
+        }
+        if (!Array.isArray(user.projectId)) {
+            user.projectId = []; 
+        }
+        user.projectId.push(projectId);
+        return this.updateUser(user);
+    }
+    async addProjectToUserByEmail(email, projectId) {
+        const user = await this.findUserByEmail(email);
+        if (!user) {
+            throw new Error('User not found');
+        }
+        if (!Array.isArray(user.projectId)) {
+            user.projectId = []; 
+        }
+        user.projectId.push(projectId);
+        return this.updateUser(user);
+    }
 
     async deleteUser(userId) {
         return this.db.collection('users').doc(userId).delete();

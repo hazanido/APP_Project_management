@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from '../api/backendAPI';
 
@@ -28,9 +28,11 @@ const ProjectListScreen = () => {
     }
   };
 
-  useEffect(() => {
-    fetchProjects(); 
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchProjects(); 
+    }, [])
+  );
 
   const handleLogout = async () => {
     await AsyncStorage.removeItem('userToken'); 
@@ -73,7 +75,6 @@ const ProjectListScreen = () => {
         />
       </TouchableOpacity>
 
-      
       <TouchableOpacity onPress={() => navigation.navigate('MyTasksScreen')}>
         <Image
           source={require('../../assets/my tasks_he.png')} 
@@ -81,7 +82,6 @@ const ProjectListScreen = () => {
         />
       </TouchableOpacity>
 
-      
       <View style={styles.buttonRow}>
         <TouchableOpacity onPress={() => navigation.navigate('MessagesScreen')}>
           <Image
@@ -107,6 +107,7 @@ const ProjectListScreen = () => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -162,6 +163,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
+
 
 
 export default ProjectListScreen;
