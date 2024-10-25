@@ -93,9 +93,24 @@ class UserModel {
         return user.exists ? user.data() : null;
     }
 
+
     async updateUser(user) {
-        return this.db.collection('users').doc(user.id).update(user);
+        try {
+            
+            if (user.password) {
+                
+                const hashedPassword = await bcrypt.hash(user.password, 10);
+                user.password = hashedPassword;
+            }
+    
+            
+            return this.db.collection('users').doc(user.id).update(user);
+        } catch (error) {
+            console.error('Error updating user:', error);
+            throw error;
+        }
     }
+    
 
     async deleteUser(userId) {
         return this.db.collection('users').doc(userId).delete();
