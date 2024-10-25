@@ -1,31 +1,31 @@
 import React, { useState } from 'react';
 import { View, TextInput, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import axios from '../api/backendAPI'; // להחליף בקובץ ה-API המתאים
+import axios from '../api/backendAPI'; 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CreateProjectScreen = ({ navigation }) => {
   const [projectName, setProjectName] = useState('');
-  const [description, setDescription] = useState(''); // שדה תיאור
-  const [startDate, setStartDate] = useState(''); // שדה תאריך התחלה
+  const [description, setDescription] = useState(''); 
+  const [startDate, setStartDate] = useState(''); 
   const [endDate, setEndDate] = useState('');
   const [members, setMembers] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleCreateProject = async () => {
     try {
-      const userId = await AsyncStorage.getItem('userId'); // המשתמש שיצר את הפרויקט הופך למנהל
+      const userId = await AsyncStorage.getItem('userId'); 
       const token = await AsyncStorage.getItem('userToken');
 
       const response = await axios.post(
         '/projects', 
         {
           name: projectName,
-          description, // שליחת התיאור לשרת
-          startDate, // שליחת תאריך התחלה
+          description, 
+          startDate, 
           endDate,
-          members: members.split(',').map(member => member.trim()), // המרת רשימת משתתפים למערך
-          managerId: userId, // המשתמש הנוכחי הוא המנהל
-          tasks: [] // כרגע אין משימות
+          members: members.split(',').map(member => member.trim()), 
+          managerId: userId, 
+          tasks: [] 
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -49,13 +49,13 @@ const CreateProjectScreen = ({ navigation }) => {
       <TextInput
         style={styles.input}
         placeholder="תיאור פרויקט"
-        value={description} // שדה התיאור
+        value={description} 
         onChangeText={setDescription}
       />
       <TextInput
         style={styles.input}
         placeholder="תאריך התחלה"
-        value={startDate} // שדה תאריך התחלה
+        value={startDate} 
         onChangeText={setStartDate}
       />
       <TextInput

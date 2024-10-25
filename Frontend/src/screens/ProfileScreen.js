@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from '../api/backendAPI';
 
@@ -7,17 +7,16 @@ const ProfileScreen = ({ navigation }) => {
   const [userInfo, setUserInfo] = useState({ name: '', email: '' });
   const [loading, setLoading] = useState(true);
 
-  
   const fetchUserInfo = async () => {
     try {
       const token = await AsyncStorage.getItem('userToken');
-      const userId = await AsyncStorage.getItem('userId'); 
+      const userId = await AsyncStorage.getItem('userId');
       const response = await axios.get(`/users/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      setUserInfo(response.data); 
+      setUserInfo(response.data);
     } catch (error) {
       console.error('Error fetching user info:', error);
     } finally {
@@ -26,7 +25,7 @@ const ProfileScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    fetchUserInfo(); 
+    fetchUserInfo();
   }, []);
 
   if (loading) {
@@ -46,9 +45,22 @@ const ProfileScreen = ({ navigation }) => {
         <Text style={styles.infoText}>מייל: {userInfo.email}</Text>
       </View>
 
-      <Button title="עריכת פרופיל" onPress={() => navigation.navigate('EditProfileScreen')} />
+     
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity onPress={() => navigation.navigate('EditProfileScreen')}>
+          <Image
+            source={require('../../assets/Editing a profile_he.png')}  
+            style={styles.button}
+          />
+        </TouchableOpacity>
 
-      <Button title="חזור" onPress={() => navigation.navigate('ProjectListScreen')} />
+        <TouchableOpacity onPress={() => navigation.navigate('ProjectListScreen')}>
+          <Image
+            source={require('../../assets/back_he.png')}  
+            style={styles.button}
+          />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -56,14 +68,15 @@ const ProfileScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     backgroundColor: '#fff',
-    paddingTop: 50,
+    paddingTop: 80,
   },
   title: {
     fontSize: 24,
     marginBottom: 20,
+    marginTop: 20,
   },
   infoContainer: {
     marginBottom: 30,
@@ -76,6 +89,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  buttonContainer: {
+    flexDirection: 'row', 
+    justifyContent: 'space-around', 
+    width: '80%', 
+    position: 'absolute', 
+    bottom: 30, 
+  },
+  button: {
+    width: 150,
+    height: 50,
+    marginHorizontal: 10, 
+    borderRadius: 15,
   },
 });
 

@@ -111,8 +111,8 @@ const ProjectListScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center', // ממרכז את התוכן לאורך הציר האנכי
-    alignItems: 'center', // ממרכז את התוכן לאורך הציר האופקי
+    justifyContent: 'center', 
+    alignItems: 'center', 
     backgroundColor: '#fff',
   },
   title: {
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   buttonImageLarge: {
     width: 250,
     height: 60,
-    marginTop: 20, // מאפשר רווח בין הכפתורים
+    marginTop: 20, 
     borderRadius: 15,
     overflow: 'hidden',
   },
