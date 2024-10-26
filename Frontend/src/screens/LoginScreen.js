@@ -22,7 +22,7 @@ const LoginScreen = ({ navigation }) => {
       const { token, userId } = response.data;
       await AsyncStorage.setItem('userToken', token);
       await AsyncStorage.setItem('userId', userId);
-      console.log('User logged in successfully:', response.email);
+      console.log('User logged in successfully:', response.data.email);
       navigation.navigate('ProjectListScreen');
     } catch (error) {
       setErrorMessage('התחברות נכשלה. בדוק את פרטי הכניסה.');

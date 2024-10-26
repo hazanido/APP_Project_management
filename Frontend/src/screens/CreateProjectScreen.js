@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, TextInput, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import axios from '../api/backendAPI'; 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -23,14 +23,20 @@ const CreateProjectScreen = ({ navigation }) => {
           description, 
           startDate, 
           endDate,
-          members: members.split(',').map(member => member.trim()), 
+          members: members ? members.split(',').map(member => member.trim()) : [], 
           managerId: userId, 
           tasks: [] 
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      navigation.navigate('ProjectListScreen');
+      Alert.alert(
+        'הצלחה',
+        'הפרויקט נפתח בהצלחה!',
+        [
+          { text: 'אישור', onPress: () => navigation.navigate('ProjectListScreen') }
+        ]
+      );
     } catch (error) {
       setErrorMessage('שגיאה ביצירת הפרויקט.');
     }

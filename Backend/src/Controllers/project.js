@@ -24,11 +24,15 @@ const createProject = async (req, res) => {
 
         await userModel.addProjectToUser(managerId, newProject.id);
 
-        if (members && typeof members === 'string') {
-            const memberEmails = members.split(',').map(email => email.trim());
+        if (members) {
+            const memberEmails = typeof members === 'string' ? members.split(',').map(email => email.trim()) : members;
 
             for (const email of memberEmails) {
-                await userModel.addProjectToUserByEmail(email, newProject.id);
+                try {
+                    await userModel.addProjectToUserByEmail(email, newProject.id);
+                } catch (error) {
+                    console.error(`User with email ${email} not found. Skipping this user.`);
+                }
             }
         }
 

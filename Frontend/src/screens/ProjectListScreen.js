@@ -22,7 +22,11 @@ const ProjectListScreen = () => {
   
       setProjects(response.data); 
     } catch (error) {
-      console.error('Error fetching projects:', error);
+      if (error.response && error.response.status === 404) {
+        setProjects([]); 
+      } else {
+        console.error('Error fetching projects:', error);
+      }
     } finally {
       setLoading(false); 
     }
