@@ -112,19 +112,29 @@ const getProjectsByUser = async (req, res) => {
     try {
         const { userId } = req.params;
 
-        const projects = await projectModel.getProjectsByUser(userId);
+        const user = await userModel.getUserById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
 
-        if (!projects || projects.length === 0) {
+        const managedProjects = await projectModel.getProjectsByUser(userId);
+
+        const memberProjects = await projectModel.getProjectsByUserMember(user.email);
+
+        const allProjects = [...managedProjects, ...memberProjects];
+
+        if (allProjects.length === 0) {
             return res.status(404).json({ message: 'No projects found for this user' });
         }
-        console.log("Project IDs for user before update:", req.params);
 
-        res.status(200).json(projects);
+        res.status(200).json(allProjects);
     } catch (error) {
         console.error('Error fetching projects for user:', error);
         res.status(500).json({ message: 'Error fetching projects for user', error: error.message });
     }
 };
+
+
 
 module.exports = {
     createProject,

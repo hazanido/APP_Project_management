@@ -7,7 +7,7 @@ const { authenticateToken } = require('../middleware/authenticate');
 router.post('/', authenticateToken, projectController.createProject);
 
 
-router.get('/:id', authenticateToken, projectController.getProjectById);
+router.get('/:projectId', authenticateToken, projectController.getProjectById);
 
 
 router.put('/:id', authenticateToken, projectController.updateProject);

@@ -79,6 +79,13 @@ class ProjectModel {
         snapshot.forEach(doc => projects.push(doc.data()));
         return projects;
     }
+
+    async getProjectsByUserMember(userEmail) {
+        const snapshot = await this.db.collection('projects').where('members', 'array-contains', userEmail).get();
+        const projects = [];
+        snapshot.forEach(doc => projects.push(doc.data()));
+        return projects;
+    }
     
 
     async findProjectById(projectId) {
