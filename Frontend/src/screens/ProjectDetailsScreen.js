@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from '../api/backendAPI';
 
@@ -22,7 +22,7 @@ const ProjectDetailsScreen = ({ route, navigation }) => {
         setProject(response.data);
         setIsManager(response.data.managerId === userId);
       } catch (error) {
-        console.error('שגיאה בקבלת פרטי הפרויקט:', error); 
+        console.error('Error getting project details:', error); 
         console.log("Response data:", error.response?.data);
       }
     };
@@ -43,6 +43,15 @@ const ProjectDetailsScreen = ({ route, navigation }) => {
       <Text style={styles.title}>{project.name}</Text>
       <Text style={styles.description}>{project.description}</Text>
       <Text style={styles.dates}>תאריך התחלה: {project.startDate} - תאריך סיום: {project.endDate}</Text>
+
+      <Text style={styles.participantsTitle}>משתתפי הפרויקט:</Text>
+      <FlatList
+        data={project.members}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => (
+          <Text style={styles.participantItem}>{item}</Text>
+        )}
+      />
 
       <TouchableOpacity onPress={() => navigation.navigate('ProjectTasksScreen')}>
         <Image source={require('../../assets/project_tasks_he.png')} style={styles.buttonImage} />
@@ -86,6 +95,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'gray',
     marginBottom: 20,
+  },
+  participantsTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  participantItem: {
+    fontSize: 16,
+    color: 'black',
+    marginVertical: 2,
   },
   buttonImage: {
     width: 250,
