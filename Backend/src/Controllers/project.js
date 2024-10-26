@@ -134,6 +134,54 @@ const getProjectsByUser = async (req, res) => {
     }
 };
 
+const addParticipantByEmail = async (req, res) => {
+    try {
+        const { projectId } = req.params;
+        const { email } = req.body;
+        
+        console.log('Adding participant to project:', projectId, 'with email:', email);
+
+        const project = await projectModel.findProjectById(projectId);
+        if (!project) {
+            return res.status(404).json({ message: 'Project not found' });
+        }
+
+        project.id = projectId;
+
+        if (!project.members.includes(email)) {
+            project.members.push(email);
+            await projectModel.updateProject(project); 
+        }
+
+        res.status(200).json({ message: 'Participant added to project successfully' });
+    } catch (error) {
+        console.error('Error adding participant to project:', error);
+        res.status(500).json({ message: 'Error adding participant to project', error: error.message });
+    }
+};
+
+const removeParticipantFromProject = async (req, res) => {
+    try {
+        const { projectId } = req.params;
+        const { email } = req.body;
+
+        console.log(`Removing participant with email: ${email} from project: ${projectId}`);
+        
+        const project = await projectModel.findProjectById(projectId);
+        if (!project) {
+            return res.status(404).json({ message: 'Project not found' });
+        }
+        
+        project.members = project.members.filter(member => member !== email);
+        await projectModel.updateProject(project);
+
+        res.status(200).json({ message: 'Participant removed from project successfully' });
+    } catch (error) {
+        console.error('Error removing participant from project:', error);
+        res.status(500).json({ message: 'Error removing participant from project', error: error.message });
+    }
+};
+
 
 
 module.exports = {
@@ -141,5 +189,7 @@ module.exports = {
     getProjectById,
     updateProject,
     deleteProject,
-    getProjectsByUser
+    getProjectsByUser,
+    addParticipantByEmail,
+    removeParticipantFromProject
 };

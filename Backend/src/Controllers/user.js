@@ -38,7 +38,7 @@ const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
         
-
+console.log('email: ', email);
         const user = await userModel.findUserByEmail(email);
         if (!user) {
             
@@ -160,6 +160,45 @@ const deleteUser = async (req, res) => {
         handleErrorResponse(res, 500, 'Error deleting user', error);
     }
 };
+const addProjectToUserByEmail = async (req, res) => {
+    try {
+        const { email, projectId } = req.body;
+        const user = await userModel.findUserByEmail(email);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        if (!user.projectId.includes(projectId)) {
+            user.projectId.push(projectId);
+            await userModel.updateUser(user);
+        }
+
+        res.status(200).json({ message: 'Project added to user successfully' });
+    } catch (error) {
+        console.error('Error adding project to user:', error);
+        res.status(500).json({ message: 'Error adding project to user', error: error.message });
+    }
+};
+const removeProjectFromUserByEmail = async (req, res) => {
+    try {
+        const { email, projectId } = req.body;
+
+        console.log(`Removing project with ID: ${projectId} from user with email: ${email}`);
+        
+        const user = await userModel.findUserByEmail(email);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        user.projectId = user.projectId.filter(id => id !== projectId);
+        await userModel.updateUser(user);
+
+        res.status(200).json({ message: 'Project removed from user successfully' });
+    } catch (error) {
+        console.error('Error removing project from user:', error);
+        res.status(500).json({ message: 'Error removing project from user', error: error.message });
+    }
+};
 
 
 module.exports = {
@@ -168,5 +207,7 @@ module.exports = {
     updateUser,
     deleteUser,
     loginUser,
-    googleLogin
+    googleLogin,
+    addProjectToUserByEmail,
+    removeProjectFromUserByEmail
 };

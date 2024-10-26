@@ -4,11 +4,15 @@ const userController = require('../Controllers/user');
 const { authenticateToken } = require('../middleware/authenticate');
 
 
+router.put('/removeProject', authenticateToken, userController.removeProjectFromUserByEmail);
 
+router.put('/addProject', authenticateToken, userController.addProjectToUserByEmail);
 
 router.post('/register', userController.createUser);
 
 router.post('/login', userController.loginUser);
+
+router.post('/google-login', userController.googleLogin);
 
 router.get('/:id', userController.getUserById);
 
@@ -16,6 +20,6 @@ router.put('/:id',authenticateToken, userController.updateUser);
 
 router.delete('/:id', userController.deleteUser);
 
-router.post('/google-login', userController.googleLogin);
+
 
 module.exports = router;

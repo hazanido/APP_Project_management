@@ -20,7 +20,7 @@ const EditProjectScreen = ({ route, navigation }) => {
         setProject(response.data);
         setIsManager(response.data.managerId === userId);
       } catch (error) {
-        console.error('שגיאה בקבלת פרטי הפרויקט:', error);
+        console.error('Error getting project details:', error);
       }
     };
     fetchProjectDetails();
@@ -41,19 +41,66 @@ const EditProjectScreen = ({ route, navigation }) => {
     }
   };
 
-  const addParticipant = () => {
+  const addParticipant = async () => {
     if (newParticipant && !project.members.includes(newParticipant)) {
-      setProject({ ...project, members: [...project.members, newParticipant] });
-      setNewParticipant('');
-    }
-  };
+        try {
+            const token = await AsyncStorage.getItem('userToken');
+            console.log("Adding participant to project:", newParticipant);
 
-  const removeParticipant = (participant) => {
-    setProject({
-      ...project,
-      members: project.members.filter((item) => item !== participant),
-    });
-  };
+            const projectResponse = await axios.put(
+                `/projects/${projectId}/addParticipant`, 
+                { email: newParticipant },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            console.log("Project update response:", projectResponse.data);
+            console.log("Sending request to add project to user...");
+
+            const userResponse = await axios.put('/users/addProject',
+                { email: newParticipant, projectId },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            
+            console.log("User update response:", userResponse.data);
+
+            setProject({ ...project, members: [...project.members, newParticipant] });
+            setNewParticipant('');
+            Alert.alert('Success', 'Participant added successfully');
+            
+        } catch (error) {
+            console.error('Error adding participant:', error);
+            Alert.alert('Error', 'Failed to add participant.');
+        }
+    }
+};
+
+
+const removeParticipant = async (participant) => {
+    try {
+        const token = await AsyncStorage.getItem('userToken');
+
+        await axios.put(
+            `/projects/${projectId}/removeParticipant`, 
+            { email: participant },
+            { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        await axios.put(
+            `/users/removeProject`, 
+            { email: participant, projectId },
+            { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        setProject({
+            ...project,
+            members: project.members.filter((item) => item !== participant),
+        });
+
+        Alert.alert('Success', 'Participant removed successfully');
+    } catch (error) {
+        console.error('Error removing participant from project:', error);
+        Alert.alert('Error', 'Failed to remove participant from project.');
+    }
+};
 
   if (!project) {
     return (
