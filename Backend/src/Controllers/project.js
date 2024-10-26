@@ -22,14 +22,15 @@ const createProject = async (req, res) => {
             tasks
         });
 
-        await userModel.addProjectToUser(
-             managerId,newProject.id  
-        );
-         const memberEmails = typeof members === 'string' ? members.split(',').map(email => email.trim()) : members;
+        await userModel.addProjectToUser(managerId, newProject.id);
 
-         for (const email of memberEmails) {
-             await userModel.addProjectToUserByEmail(email, newProject.id);
-         }
+        if (members && typeof members === 'string') {
+            const memberEmails = members.split(',').map(email => email.trim());
+
+            for (const email of memberEmails) {
+                await userModel.addProjectToUserByEmail(email, newProject.id);
+            }
+        }
 
         res.status(201).json({ message: 'Project created successfully', project: newProject });
     } catch (error) {
@@ -37,6 +38,7 @@ const createProject = async (req, res) => {
         res.status(500).json({ message: 'Error creating project', error: error.message });
     }
 };
+
 
 
 

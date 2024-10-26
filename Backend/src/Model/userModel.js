@@ -97,8 +97,7 @@ class UserModel {
     async updateUser(user) {
         try {
             
-            if (user.password) {
-                
+            if (user.password && !user.isProjectUpdate) {
                 const hashedPassword = await bcrypt.hash(user.password, 10);
                 user.password = hashedPassword;
             }
@@ -119,6 +118,7 @@ class UserModel {
             user.projectId = []; 
         }
         user.projectId.push(projectId);
+        user.isProjectUpdate = true;
         return this.updateUser(user);
     }
     async addProjectToUserByEmail(email, projectId) {
@@ -130,6 +130,7 @@ class UserModel {
             user.projectId = []; 
         }
         user.projectId.push(projectId);
+        user.isProjectUpdate = true;
         return this.updateUser(user);
     }
 

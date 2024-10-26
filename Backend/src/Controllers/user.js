@@ -37,16 +37,18 @@ const createUser = async (req, res) => {
 const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
-        console.log('email: ', req.body.email);
+        
 
         const user = await userModel.findUserByEmail(email);
         if (!user) {
+            
             return res.status(401).send({ message: 'Invalid email or password' });
         }
 
 
         const validPassword = await userModel.verifyPassword(password, user.password);
         if (!validPassword) {
+            console.log('email: ', req.body.email);
             return res.status(401).send({ message: 'Invalid email or password' });
         }
 
@@ -57,7 +59,8 @@ const loginUser = async (req, res) => {
         res.status(200).json({ 
             message: 'Login successful', 
             token, 
-            userId: user.id 
+            userId: user.id ,
+            email: user.email
           });
           
     } catch (error) {

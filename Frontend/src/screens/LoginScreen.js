@@ -10,35 +10,33 @@ const LoginScreen = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  // הגדרת Google Sign-In עם Expo
   const [request, response, promptAsync] = Google.useAuthRequest({
     expoClientId: 'YOUR_EXPO_CLIENT_ID',
     androidClientId: 'YOUR_ANDROID_CLIENT_ID',
     iosClientId: 'YOUR_IOS_CLIENT_ID',
   });
 
-  // התחברות רגילה עם שם משתמש וסיסמה
   const handleLogin = async () => {
     try {
       const response = await axios.post('/users/login', { email, password });
       const { token, userId } = response.data;
       await AsyncStorage.setItem('userToken', token);
       await AsyncStorage.setItem('userId', userId);
+      console.log('User logged in successfully:', response.email);
       navigation.navigate('ProjectListScreen');
     } catch (error) {
       setErrorMessage('התחברות נכשלה. בדוק את פרטי הכניסה.');
     }
   };
 
-  // התחברות עם Google
   const handleGoogleLogin = async () => {
     try {
-      const result = await promptAsync(); // קבלת תוצאת ההתחברות מ-Google
+      const result = await promptAsync(); 
       if (result.type === 'success') {
         const { id_token } = result.params;
-        const { token } = await googleLogin(id_token); // שליחת ה-token לשרת
-        await AsyncStorage.setItem('userToken', token); // שמירת ה-token
-        navigation.navigate('ProjectListScreen'); // מעבר למסך הפרויקטים
+        const { token } = await googleLogin(id_token); 
+        await AsyncStorage.setItem('userToken', token); 
+        navigation.navigate('ProjectListScreen'); 
       } else {
         setErrorMessage('התחברות עם Google נכשלה.');
       }
