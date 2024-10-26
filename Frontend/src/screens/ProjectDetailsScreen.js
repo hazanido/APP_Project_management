@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 import axios from '../api/backendAPI';
 
 const ProjectDetailsScreen = ({ route, navigation }) => {
@@ -8,27 +9,29 @@ const ProjectDetailsScreen = ({ route, navigation }) => {
   const [project, setProject] = useState(null);
   const [isManager, setIsManager] = useState(false);
 
-  useEffect(() => {
-    const fetchProjectDetails = async () => {
-      const token = await AsyncStorage.getItem('userToken');
-      const userId = await AsyncStorage.getItem('userId');
-  
-      try {
-        console.log("Fetching project details for projectId:", projectId); 
-        const response = await axios.get(`/projects/${projectId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-  
-        setProject(response.data);
-        setIsManager(response.data.managerId === userId);
-      } catch (error) {
-        console.error('Error getting project details:', error); 
-        console.log("Response data:", error.response?.data);
-      }
-    };
-  
-    fetchProjectDetails();
-  }, [projectId]);
+  const fetchProjectDetails = async () => {
+    const token = await AsyncStorage.getItem('userToken');
+    const userId = await AsyncStorage.getItem('userId');
+
+    try {
+      console.log("Fetching project details for projectId:", projectId); 
+      const response = await axios.get(`/projects/${projectId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setProject(response.data);
+      setIsManager(response.data.managerId === userId);
+    } catch (error) {
+      console.error('Error getting project details:', error); 
+      console.log("Response data:", error.response?.data);
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchProjectDetails();
+    }, [projectId])
+  );
 
   if (!project) {
     return (
