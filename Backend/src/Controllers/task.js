@@ -28,7 +28,7 @@ const createTask = async (req, res) => {
         console.log("Task added to project successfully.");
 
         try {
-            await userModel.addTaskToUser(taskPersonId, newTask.id);
+            await userModel.addTaskToUserByEmail(taskPersonId, newTask.id);
             console.log("Task added to user successfully.");
         } catch (error) {
             console.error("Failed to add task to user:", error);

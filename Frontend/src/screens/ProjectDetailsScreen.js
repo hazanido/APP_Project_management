@@ -14,7 +14,6 @@ const ProjectDetailsScreen = ({ route, navigation }) => {
     const userId = await AsyncStorage.getItem('userId');
 
     try {
-      console.log("Fetching project details for projectId:", projectId); 
       const response = await axios.get(`/projects/${projectId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -22,8 +21,7 @@ const ProjectDetailsScreen = ({ route, navigation }) => {
       setProject(response.data);
       setIsManager(response.data.managerId === userId);
     } catch (error) {
-      console.error('Error getting project details:', error); 
-      console.log("Response data:", error.response?.data);
+      console.error('Error getting project details:', error);
     }
   };
 
@@ -56,9 +54,11 @@ const ProjectDetailsScreen = ({ route, navigation }) => {
         )}
       />
 
-      <TouchableOpacity onPress={() => navigation.navigate('ProjectTasksScreen')}>
-        <Image source={require('../../assets/project_tasks_he.png')} style={styles.buttonImage} />
-      </TouchableOpacity>
+      {isManager && (
+        <TouchableOpacity onPress={() => navigation.navigate('CreateTaskScreen', { projectId })}>
+          <Image source={require('../../assets/create_task_he.png')} style={styles.buttonImage} />
+        </TouchableOpacity>
+      )}
 
       <TouchableOpacity onPress={() => navigation.navigate('ProjectProgressScreen', { projectId })}>
         <Image source={require('../../assets/project_progress_he.png')} style={styles.buttonImage} />

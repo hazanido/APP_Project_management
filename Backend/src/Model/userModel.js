@@ -150,6 +150,23 @@ class UserModel {
         }
         return userData.tasks;
     }
+    async addTaskToUserByEmail(email, taskId) {
+        const userSnapshot = await this.db.collection('users').where('email', '==', email).limit(1).get();
+        if (userSnapshot.empty) {
+            throw new Error('User not found');
+        }
+        const userDoc = userSnapshot.docs[0];
+        const userId = userDoc.id;
+        const userData = userDoc.data();
+    
+        if (!userData.tasks) userData.tasks = [];
+        if (!userData.tasks.includes(taskId)) {
+            userData.tasks.push(taskId);
+            await this.db.collection('users').doc(userId).update({ tasks: userData.tasks });
+        }
+        return userData.tasks;
+    }
+    
     
     
 }
