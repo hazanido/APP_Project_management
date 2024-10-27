@@ -137,6 +137,21 @@ class UserModel {
     async deleteUser(userId) {
         return this.db.collection('users').doc(userId).delete();
     }
+
+    async addTaskToUser(userId, taskId) {
+        const user = await this.db.collection('users').doc(userId).get();
+        if (!user.exists) throw new Error('User not found');
+    
+        const userData = user.data();
+        if (!userData.tasks) userData.tasks = [];  
+        if (!userData.tasks.includes(taskId)) {
+            userData.tasks.push(taskId);
+            await this.db.collection('users').doc(userId).update({ tasks: userData.tasks });
+        }
+        return userData.tasks;
+    }
+    
+    
 }
 
 module.exports = UserModel;

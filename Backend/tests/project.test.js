@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('../index'); // נניח שאתה מייבא את אפליקציית ה-Express שלך כאן
+const app = require('../index'); 
 const { db } = require('../firebase');
 const { v4: uuidv4 } = require('uuid');
 
@@ -7,7 +7,6 @@ let projectId;
 let token;
 let userId;
 
-// משתמש בדיקה
 const testUser = {
     id: "testUserId",
     name: "Test User",
@@ -15,7 +14,6 @@ const testUser = {
     password: "password123"
 };
 
-// פרויקט בדיקה עם שם ייחודי
 const testProject = {
     name: `Test Project ${uuidv4()}`,
     description: "Test project description",
@@ -58,7 +56,7 @@ afterAll(async () => {
 
 describe('Project API Tests', () => {
 
-    test('POST /projects - יצירת פרויקט חדש', async () => {
+    test('POST /projects ', async () => {
         const res = await request(app)
             .post('/projects')
             .set('Authorization', token)
@@ -71,7 +69,7 @@ describe('Project API Tests', () => {
         projectId = res.body.project.id;
     });
 
-    test('GET /projects/:id - שליפת פרויקט לפי מזהה', async () => {
+    test('GET /projects/:id ', async () => {
         const res = await request(app)
             .get(`/projects/${projectId}`) 
             .set('Authorization', token);
@@ -83,7 +81,7 @@ describe('Project API Tests', () => {
     
     
 
-    test('PUT /projects/:id - עדכון פרויקט קיים', async () => {
+    test('PUT /projects/:id ', async () => {
         const updatedProjectData = {
             name: 'Updated Project Name',
             description: 'Updated Description',
@@ -104,7 +102,7 @@ describe('Project API Tests', () => {
     });
     
 
-    test('GET /projects/user/:userId - שליפת פרויקטים לפי מזהה משתמש', async () => {
+    test('GET /projects/user/:userId ', async () => {
         const res = await request(app)
             .get(`/projects/user/${userId}`)
             .set('Authorization', token);
@@ -114,7 +112,7 @@ describe('Project API Tests', () => {
         expect(res.body.some(project => project.id === projectId)).toBe(true);
     });
 
-    test('DELETE /projects/:id - מחיקת פרויקט', async () => {
+    test('DELETE /projects/:id ', async () => {
         const res = await request(app)
             .delete(`/projects/${projectId}`) 
             .set('Authorization', token);

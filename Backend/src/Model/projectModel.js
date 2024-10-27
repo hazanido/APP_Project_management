@@ -110,6 +110,15 @@ class ProjectModel {
         if (!projectId) throw new Error('Project ID is required');  
         await this.db.collection('projects').doc(projectId).delete();
     }
+
+    async addTaskToProject(projectId, taskId) {
+        const project = await this.findProjectById(projectId);
+        if (!project.tasks.includes(taskId)) {
+            project.tasks.push(taskId);
+            await this.updateProject(project);
+        }
+    }
+    
 }
 
 module.exports = ProjectModel;

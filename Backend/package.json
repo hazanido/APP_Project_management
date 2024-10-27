@@ -7,7 +7,8 @@
     "dev": "nodemon index.js",
     "test": "echo \"No tests yet\"",
     "testuser": "jest --detectOpenHandles --forceExit ./tests/user.test.js",
-    "testproject": "jest --detectOpenHandles --forceExit ./tests/project.test.js"
+    "testproject": "jest --detectOpenHandles --forceExit ./tests/project.test.js",
+    "testtask": "jest --detectOpenHandles --forceExit ./tests/task.test.js"
   },
   "keywords": [],
   "author": "ido and sharon",
