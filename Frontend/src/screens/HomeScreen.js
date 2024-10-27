@@ -11,7 +11,7 @@ const HomeScreen = ({ navigation }) => {
 
             <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
                 <Image
-                    source={require('../../assets/continue.png')} 
+                    source={require('../../assets/continue_he.png')} 
                     style={styles.buttonImage}
                 />
             </TouchableOpacity>
