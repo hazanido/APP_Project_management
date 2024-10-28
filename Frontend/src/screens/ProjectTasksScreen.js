@@ -9,18 +9,24 @@ const ProjectTasksScreen = ({ route }) => {
   const navigation = useNavigation();
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isManager, setIsManager] = useState(false);
 
   const fetchProjectTasks = async () => {
     try {
       const token = await AsyncStorage.getItem('userToken');
+      const userId = await AsyncStorage.getItem('userId');
       
-      const response = await axios.get(`/tasks/project/${projectId}`, { 
+      const projectResponse = await axios.get(`/projects/${projectId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setIsManager(projectResponse.data.managerId === userId);
+
+      const tasksResponse = await axios.get(`/tasks/project/${projectId}`, { 
         headers: {
           Authorization: `Bearer ${token}`, 
         },
       });
-      
-      setTasks(response.data);
+      setTasks(tasksResponse.data);
     } catch (error) {
       console.error('Error fetching project tasks:', error);
       setTasks([]);
@@ -64,6 +70,12 @@ const ProjectTasksScreen = ({ route }) => {
         <Text style={styles.noTasksText}>אין משימות זמינות</Text>
       )}
 
+      {isManager && (
+        <TouchableOpacity onPress={() => navigation.navigate('CreateTaskScreen', { projectId })}>
+          <Image source={require('../../assets/create_task_he.png')} style={styles.createButton} />
+        </TouchableOpacity>
+      )}
+
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <Image source={require('../../assets/back_he.png')} style={styles.backButton} />
       </TouchableOpacity>
@@ -98,6 +110,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: 'gray',
     marginTop: 20,
+  },
+  createButton: {
+    width: 250,
+    height: 60,
+    borderRadius: 15,
+    marginVertical: 10,
   },
   backButton: {
     width: 150,
