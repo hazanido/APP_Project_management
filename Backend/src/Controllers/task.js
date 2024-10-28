@@ -7,7 +7,7 @@ const userModel = new UserModel();
 
 const createTask = async (req, res) => {
     try {
-        const { projectId, name, description, startDate, endDate, taskPersonId } = req.body;
+        const { projectId, name, description, startDate, endDate, taskPersonId, status } = req.body;
 
         if (!projectId || !name || !taskPersonId) {
             return res.status(400).json({ message: 'Project ID, Task Name, and Task Person ID are required.' });
@@ -19,17 +19,14 @@ const createTask = async (req, res) => {
             description,
             startDate,
             endDate,
-            taskPersonId
+            taskPersonId,
+            status 
         });
 
-        console.log("Task created successfully:", newTask.id);
-
         await projectModel.addTaskToProject(projectId, newTask.id);
-        console.log("Task added to project successfully.");
 
         try {
             await userModel.addTaskToUserByEmail(taskPersonId, newTask.id);
-            console.log("Task added to user successfully.");
         } catch (error) {
             console.error("Failed to add task to user:", error);
             return res.status(500).json({ message: 'Failed to add task to user', error: error.message });
@@ -80,7 +77,7 @@ const getTasksByProjectId = async (req, res) => {
 const updateTask = async (req, res) => {
     try {
         const { taskId } = req.params;
-        const { name, description, startDate, endDate, taskPersonId } = req.body;
+        const { name, description, startDate, endDate, taskPersonId, status } = req.body; // הוספת status
 
         const updatedTask = {
             id: taskId,
@@ -88,7 +85,8 @@ const updateTask = async (req, res) => {
             description,
             startDate,
             endDate,
-            taskPersonId
+            taskPersonId,
+            status 
         };
 
         await taskModel.updateTask(updatedTask);
@@ -98,6 +96,7 @@ const updateTask = async (req, res) => {
         res.status(500).json({ message: 'Error updating task', error: error.message });
     }
 };
+
 
 const deleteTask = async (req, res) => {
     try {
@@ -117,13 +116,13 @@ const getTasksByUser = async (req, res) => {
         const taskIds = await userModel.getTasksByUserId(userId);
 
         if (!taskIds || taskIds.length === 0) {
-            return res.status(404).json({ message: 'No tasks found for this user' });
+            return res.status(200).json([]);
         }
 
         const tasks = await Promise.all(
             taskIds.map(async (taskId) => {
                 const task = await taskModel.findTaskById(taskId); 
-                return task ? { id: taskId, name: task.name } : null; 
+                return task ? { id: taskId, name: task.name, projectId: task.projectId  } : null; 
             })
         );
 
@@ -135,6 +134,7 @@ const getTasksByUser = async (req, res) => {
         res.status(500).json({ message: 'Error fetching tasks', error: error.message });
     }
 };
+
 
 
 

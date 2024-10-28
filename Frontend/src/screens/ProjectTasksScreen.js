@@ -42,10 +42,11 @@ const ProjectTasksScreen = ({ route }) => {
   );
 
   const renderTask = ({ item }) => (
-    <TouchableOpacity onPress={() => navigation.navigate('TaskDetailsScreen', { taskId: item.id })}>
+    <TouchableOpacity onPress={() => navigation.navigate('TaskDetailsScreen', { taskId: item.id, projectId: item.projectId })}>
       <Text style={styles.taskItem}>{item.name}</Text>
     </TouchableOpacity>
   );
+  
 
   if (loading) {
     return (

@@ -2,7 +2,7 @@ const { db } = require('../../firebase');
 const { v4: uuidv4 } = require('uuid');
 
 class Task {
-    constructor(id, projectId, name, description, startDate, endDate, taskPersonId) {
+    constructor(id, projectId, name, description, startDate, endDate, taskPersonId, status = 'in-progress') {
         if (!id || !projectId || !name || !taskPersonId) {
             throw new Error('ID, Project ID, Task Name, and Task Person ID are required fields.');
         }
@@ -14,6 +14,7 @@ class Task {
         this.startDate = startDate || null;
         this.endDate = endDate || null;
         this.taskPersonId = taskPersonId;
+        this.status = status; 
     }
 }
 
@@ -31,9 +32,10 @@ class TaskModel {
                 taskData.description,
                 taskData.startDate,
                 taskData.endDate,
-                taskData.taskPersonId
+                taskData.taskPersonId,
+                taskData.status || 'in-progress' 
             );
-
+    
             const taskPlainObject = {
                 id: task.id,
                 projectId: task.projectId,
@@ -41,7 +43,8 @@ class TaskModel {
                 description: task.description,
                 startDate: task.startDate,
                 endDate: task.endDate,
-                taskPersonId: task.taskPersonId
+                taskPersonId: task.taskPersonId,
+                status: task.status 
             };
             console.log('Saving task with projectId:', taskPlainObject.projectId);
 
@@ -91,6 +94,7 @@ class TaskModel {
         if (task.startDate !== undefined) updateData.startDate = task.startDate;
         if (task.endDate !== undefined) updateData.endDate = task.endDate;
         if (task.taskPersonId !== undefined) updateData.taskPersonId = task.taskPersonId;
+        if (task.status !== undefined) updateData.status = task.status; 
     
         await this.db.collection('tasks').doc(task.id).update(updateData);
     

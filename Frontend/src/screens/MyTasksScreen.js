@@ -19,7 +19,12 @@ const MyTasksScreen = () => {
           Authorization: `Bearer ${token}`, 
         },
       });
-      
+        console.log('Tasks fetched:', response.data);
+        response.data.forEach(task => {
+        console.log('Task:', task.name, 'Project ID:', task.projectId);
+});
+
+
       setTasks(response.data);
     } catch (error) {
       console.error('Error fetching tasks:', error);
@@ -36,10 +41,11 @@ const MyTasksScreen = () => {
   );
 
   const renderTask = ({ item }) => (
-    <TouchableOpacity onPress={() => navigation.navigate('TaskDetailsScreen', { taskId: item.id })}>
+    <TouchableOpacity onPress={() => navigation.navigate('TaskDetailsScreen', { taskId: item.id, projectId: item.projectId })}>
       <Text style={styles.taskItem}>{item.name}</Text>
     </TouchableOpacity>
   );
+  
 
   if (loading) {
     return (
