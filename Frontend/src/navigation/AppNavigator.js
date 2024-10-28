@@ -13,7 +13,7 @@ import EditProfileScreen from '../screens/EditProfileScreen';
 import EditProjectScreen from '../screens/EditProjectScreen';
 import ProjectProgressScreen from '../screens/ProjectProgressScreen';
 import CreateTaskScreen from '../screens/CreateTaskScreen ';
-
+import ProjectTasksScreen from '../screens/ProjectTasksScreen';
 
 
 
@@ -36,6 +36,7 @@ const AppNavigator = () => {
         <Stack.Screen name="EditProjectScreen" component={EditProjectScreen} />
         <Stack.Screen name="ProjectProgressScreen" component={ProjectProgressScreen} />
         <Stack.Screen name="CreateTaskScreen" component={CreateTaskScreen} />
+        <Stack.Screen name="ProjectTasksScreen" component={ProjectTasksScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

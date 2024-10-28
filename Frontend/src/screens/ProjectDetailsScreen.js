@@ -60,6 +60,10 @@ const ProjectDetailsScreen = ({ route, navigation }) => {
         </TouchableOpacity>
       )}
 
+      <TouchableOpacity onPress={() => navigation.navigate('ProjectTasksScreen', { projectId })}>
+        <Image source={require('../../assets/project_tasks_he.png')} style={styles.buttonImage} />
+      </TouchableOpacity>
+
       <TouchableOpacity onPress={() => navigation.navigate('ProjectProgressScreen', { projectId })}>
         <Image source={require('../../assets/project_progress_he.png')} style={styles.buttonImage} />
       </TouchableOpacity>
