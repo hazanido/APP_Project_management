@@ -143,13 +143,14 @@ class UserModel {
         if (!user.exists) throw new Error('User not found');
     
         const userData = user.data();
-        if (!userData.tasks) userData.tasks = [];  
-        if (!userData.tasks.includes(taskId)) {
-            userData.tasks.push(taskId);
-            await this.db.collection('users').doc(userId).update({ tasks: userData.tasks });
+        if (!userData.taskId) userData.taskId = [];
+        if (!userData.taskId.includes(taskId)) {
+            userData.taskId.push(taskId);
+            await this.db.collection('users').doc(userId).update({ taskId: userData.taskId });
         }
-        return userData.tasks;
+        return userData.taskId;
     }
+    
     async addTaskToUserByEmail(email, taskId) {
         const userSnapshot = await this.db.collection('users').where('email', '==', email).limit(1).get();
         if (userSnapshot.empty) {
@@ -159,13 +160,26 @@ class UserModel {
         const userId = userDoc.id;
         const userData = userDoc.data();
     
-        if (!userData.tasks) userData.tasks = [];
-        if (!userData.tasks.includes(taskId)) {
-            userData.tasks.push(taskId);
-            await this.db.collection('users').doc(userId).update({ tasks: userData.tasks });
+        if (!userData.taskId) userData.taskId = []; 
+        if (!userData.taskId.includes(taskId)) {
+            userData.taskId.push(taskId);
+            await this.db.collection('users').doc(userId).update({ taskId: userData.taskId });
         }
-        return userData.tasks;
+        return userData.taskId;
     }
+
+    async getTasksByUserId(userId) {
+        const user = await this.db.collection('users').doc(userId).get();
+        if (!user.exists) {
+            throw new Error('User not found');
+        }
+        const userData = user.data();
+        if (!userData.taskId) {
+            return [];
+        }
+        return userData.taskId;
+    }
+    
     
     
     

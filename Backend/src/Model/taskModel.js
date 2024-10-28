@@ -71,13 +71,15 @@ class TaskModel {
         if (!taskId) {
             throw new Error('Task ID is required');
         }
-
+    
         const snapshot = await this.db.collection('tasks').doc(taskId).get();
         if (!snapshot.exists) {
             throw new Error('Task not found');
         }
-        return snapshot.data();
+    
+        return { id: taskId, ...snapshot.data() }; 
     }
+    
 
     async updateTask(task) {
         if (!task.id) throw new Error('Task ID is required');
@@ -101,6 +103,19 @@ class TaskModel {
         
         await this.db.collection('tasks').doc(taskId).delete();
     }
+
+    async getTasksByUserId(userId) {
+        if (!userId) throw new Error('User ID is required');
+
+        const tasksSnapshot = await this.db.collection('tasks').where('taskPersonId', '==', userId).get();
+        if (tasksSnapshot.empty) {
+            return null;
+        }
+
+        return tasksSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    }
+   
+    
 }
 
 module.exports = TaskModel;

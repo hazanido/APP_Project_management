@@ -110,11 +110,40 @@ const deleteTask = async (req, res) => {
         res.status(500).json({ message: 'Error deleting task', error: error.message });
     }
 };
+const getTasksByUser = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        
+        const taskIds = await userModel.getTasksByUserId(userId);
+
+        if (!taskIds || taskIds.length === 0) {
+            return res.status(404).json({ message: 'No tasks found for this user' });
+        }
+
+        const tasks = await Promise.all(
+            taskIds.map(async (taskId) => {
+                const task = await taskModel.findTaskById(taskId); 
+                return task ? { id: taskId, name: task.name } : null; 
+            })
+        );
+
+        const filteredTasks = tasks.filter(task => task !== null);
+
+        res.status(200).json(filteredTasks);
+    } catch (error) {
+        console.error('Error fetching tasks by user:', error);
+        res.status(500).json({ message: 'Error fetching tasks', error: error.message });
+    }
+};
+
+
+
 
 module.exports = {
     createTask,
     getTaskById,
     getTasksByProjectId,
     updateTask,
-    deleteTask
+    deleteTask,
+    getTasksByUser
 };
