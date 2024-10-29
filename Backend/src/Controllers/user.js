@@ -199,6 +199,51 @@ const removeProjectFromUserByEmail = async (req, res) => {
         res.status(500).json({ message: 'Error removing project from user', error: error.message });
     }
 };
+const updateTaskAssignment = async (req, res) => {
+    try {
+        const { taskId, newUserEmail, currentUserEmail } = req.body;
+
+        const currentUser = await userModel.findUserByEmail(currentUserEmail);
+        if (!currentUser) {
+            return handleErrorResponse(res, 404, 'Current user not found');
+        }
+
+        currentUser.taskId = currentUser.taskId.filter(id => id !== taskId);
+        await userModel.updateUser(currentUser);
+
+        const newUser = await userModel.findUserByEmail(newUserEmail);
+        if (!newUser) {
+            return handleErrorResponse(res, 404, 'New user not found');
+        }
+
+        if (!newUser.taskId.includes(taskId)) {
+            newUser.taskId.push(taskId);
+            await userModel.updateUser(newUser);
+        }
+
+        res.status(200).json({ message: 'Task reassigned successfully' });
+    } catch (error) {
+        console.error('Error reassigning task:', error);
+        handleErrorResponse(res, 500, 'Error reassigning task', error);
+    }
+};
+
+const getUserByEmail = async (req, res) => {
+    try {
+        const email = req.params.email;
+        const user = await userModel.findUserByEmail(email);
+
+        if (!user) {
+            return handleErrorResponse(res, 404, 'User not found');
+        }
+
+        res.status(200).json({ id: user.id });
+    } catch (error) {
+        handleErrorResponse(res, 500, 'Error fetching user by email', error);
+    }
+};
+
+
 
 
 module.exports = {
@@ -209,5 +254,7 @@ module.exports = {
     loginUser,
     googleLogin,
     addProjectToUserByEmail,
-    removeProjectFromUserByEmail
+    removeProjectFromUserByEmail,
+    updateTaskAssignment,
+    getUserByEmail
 };

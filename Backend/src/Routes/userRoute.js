@@ -14,6 +14,10 @@ router.post('/login', userController.loginUser);
 
 router.post('/google-login', userController.googleLogin);
 
+router.put('/tasks/assign', authenticateToken, userController.updateTaskAssignment);
+
+router.get('/byEmail/:email', authenticateToken, userController.getUserByEmail);
+
 router.get('/:id', userController.getUserById);
 
 router.put('/:id',authenticateToken, userController.updateUser);
