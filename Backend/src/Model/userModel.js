@@ -180,6 +180,23 @@ class UserModel {
         return userData.taskId;
     }
     
+    async addMessageToUserByEmail(email, messageId) {
+        const user = await this.findUserByEmail(email);
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        user.messageId.push(messageId);
+        await this.updateUser(user);
+    }
+
+    async getMessagesByUserId(userId) {
+        const user = await this.getUserById(userId);
+        if (!user || !user.messageId) {
+            return [];
+        }
+        return user.messageId;
+    }
     
     
     
