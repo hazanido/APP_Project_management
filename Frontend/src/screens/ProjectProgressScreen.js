@@ -16,7 +16,7 @@ const ProjectProgressScreen = ({ route, navigation }) => {
       const token = await AsyncStorage.getItem('userToken');
 
       try {
-        const response = await axios.get(`/projects/${projectId}/tasks`, {
+        const response = await axios.get(`/tasks/project/${projectId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -32,7 +32,7 @@ const ProjectProgressScreen = ({ route, navigation }) => {
     fetchProjectProgress();
   }, [projectId]);
 
-  const completionPercentage = (completedTasks / totalTasks) * 100;
+  const completionPercentage = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
 
   return (
     <View style={styles.container}>
