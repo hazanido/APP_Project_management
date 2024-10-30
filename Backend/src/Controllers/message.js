@@ -8,10 +8,13 @@ const createMessage = async (req, res) => {
         const { messageSender, messageRecipient, title, message } = req.body;
 
         if (!messageSender || !messageRecipient || !title || !message) {
+            console.log('messageSender: ', messageSender);
+            console.log('messageRecipient: ', messageRecipient);
+            console.log('title: ', title);
+            console.log('message: ', message);
             return res.status(400).json({ message: 'Message sender, recipient, title, and message content are required.' });
         }
 
-        // יצירת הודעה חדשה
         const newMessage = await messageModel.createMessage({
             messageSender,
             messageRecipient,
@@ -19,7 +22,6 @@ const createMessage = async (req, res) => {
             message
         });
 
-        // הוספת מזהה ההודעה למשתמש השולח ולמשתמש המקבל
         await userModel.addMessageToUserByEmail(messageSender, newMessage.id);
         await userModel.addMessageToUserByEmail(messageRecipient, newMessage.id);
 
@@ -58,7 +60,7 @@ const getMessagesByUser = async (req, res) => {
         const messages = await Promise.all(
             messageIds.map(async (messageId) => {
                 const message = await messageModel.findMessageById(messageId);
-                return message ? { id: messageId, title: message.title, sender: message.messageSender } : null;
+                return message ? { id: messageId, title: message.title,content: message.message , sender: message.messageSender, recipient: message.messageRecipient } : null;
             })
         );
 

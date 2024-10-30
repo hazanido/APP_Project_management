@@ -17,6 +17,7 @@ const MessagesScreen = () => {
       const response = await axios.get(`/messages/user/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      console.log('Messages fetched:', response.data);
       setMessages(response.data);
     } catch (error) {
       console.error('שגיאה בשליפת הודעות:', error);
@@ -26,7 +27,7 @@ const MessagesScreen = () => {
 
   useEffect(() => {
     fetchMessages();
-  }, []);
+  }, [navigation]);
 
   const openMessage = (message) => {
     setSelectedMessage(message);
@@ -49,19 +50,21 @@ const MessagesScreen = () => {
       <Text style={styles.title}>תיבת הודעות</Text>
 
       <FlatList
-        data={messages}
-        renderItem={renderMessage}
-        keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={styles.messageList}
-      />
+  data={messages}
+  renderItem={renderMessage}
+  keyExtractor={(item) => item.id.toString()}
+  contentContainerStyle={{ width: '100%', paddingHorizontal: 10 }}
+  style={{ width: '100%' }}
+/>
+
 
       <Modal visible={modalVisible} transparent animationType="slide">
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>כותרת: {selectedMessage?.title}</Text>
-            <Text>תוכן: {selectedMessage?.content}</Text>
-            <Text>נשלח על ידי: {selectedMessage?.sender}</Text>
-            <Text>נשלח אל: {selectedMessage?.recipient}</Text>
+            <Text style={styles.modalText}>תוכן: {selectedMessage?.content}</Text>
+            <Text style={styles.modalText}>נשלח על ידי: {selectedMessage?.sender}</Text>
+            <Text style={styles.modalText}>נשלח אל: {selectedMessage?.recipient}</Text>
             <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
               <Text style={styles.closeButtonText}>סגור</Text>
             </TouchableOpacity>
@@ -70,7 +73,7 @@ const MessagesScreen = () => {
       </Modal>
 
       <View style={styles.buttonRow}>
-        <TouchableOpacity onPress={() => navigation.navigate('CreateMessageScreen')}>
+        <TouchableOpacity onPress={() => navigation.navigate('SendMessageScreen')}>
           <Image source={require('../../assets/send_message_he.png')} style={styles.buttonImage} />
         </TouchableOpacity>
 
@@ -95,17 +98,22 @@ const styles = StyleSheet.create({
   },
   messagesList: {
     flex: 1,
-    width: '90%',
-    marginTop: 20,
+    width: '80%',
   },
+  
   messageItem: {
     fontSize: 18,
-    padding: 15,
+    paddingVertical: 15,
+    paddingHorizontal: 30,
     marginVertical: 5,
+    width: '80%', 
     backgroundColor: '#f0f0f0',
     borderRadius: 8,
-    textAlign: 'center',
-  },
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    alignSelf: 'center', 
+},
+
   buttonRow: {
     flexDirection: 'row-reverse',
     justifyContent: 'space-around',
@@ -119,7 +127,39 @@ const styles = StyleSheet.create({
     height: 60, 
     borderRadius: 15,
   },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', 
+  },
+  modalContent: {
+    width: '80%',
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  modalText: {
+    fontSize: 16,
+    marginVertical: 5,
+  },
+  closeButton: {
+    marginTop: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    backgroundColor: '#2196F3',
+    borderRadius: 10,
+  },
+  closeButtonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
 });
-
 
 export default MessagesScreen;

@@ -118,6 +118,19 @@ class ProjectModel {
             await this.updateProject(project);
         }
     }
+    async getParticipantsByProjectId(projectId) {
+        const projectRef = this.db.collection('projects').doc(projectId);
+        const projectDoc = await projectRef.get();
+    
+        if (!projectDoc.exists) {
+            throw new Error('Project not found');
+        }
+    
+        const participants = projectDoc.data().members || []; 
+        return participants;
+    }
+    
+    
     
 }
 

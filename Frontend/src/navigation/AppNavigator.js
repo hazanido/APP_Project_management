@@ -16,7 +16,7 @@ import CreateTaskScreen from '../screens/CreateTaskScreen ';
 import ProjectTasksScreen from '../screens/ProjectTasksScreen';
 import TaskDetailsScreen from '../screens/TaskDetailsScreen';
 import EditTaskScreen from '../screens/EditTaskScreen';
-
+import SendMessageScreen from '../screens/SendMessageScreen';
 
 const Stack = createStackNavigator();
 
@@ -40,6 +40,7 @@ const AppNavigator = () => {
         <Stack.Screen name="ProjectTasksScreen" component={ProjectTasksScreen} />
         <Stack.Screen name="TaskDetailsScreen" component={TaskDetailsScreen} />
         <Stack.Screen name="EditTaskScreen" component={EditTaskScreen} />
+        <Stack.Screen name="SendMessageScreen" component={SendMessageScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

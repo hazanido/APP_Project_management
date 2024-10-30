@@ -181,6 +181,23 @@ const removeParticipantFromProject = async (req, res) => {
         res.status(500).json({ message: 'Error removing participant from project', error: error.message });
     }
 };
+const getProjectParticipants = async (req, res) => {
+    try {
+        const { projectId } = req.params;
+        
+        const participants = await projectModel.getParticipantsByProjectId(projectId);
+
+        if (!participants) {
+            return res.status(404).json({ message: 'משתתפים לא נמצאו' });
+        }
+
+        res.status(200).json(participants);
+    } catch (error) {
+        console.error('Error fetching participants:', error);
+        res.status(500).json({ message: 'שגיאה בטעינת המשתתפים', error: error.message });
+    }
+};
+
 
 
 
@@ -191,5 +208,6 @@ module.exports = {
     deleteProject,
     getProjectsByUser,
     addParticipantByEmail,
-    removeParticipantFromProject
+    removeParticipantFromProject,
+    getProjectParticipants
 };
