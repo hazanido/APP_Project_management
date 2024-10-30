@@ -108,7 +108,6 @@ const googleLogin = async (req, res) => {
 const getUserById = async (req, res) => {
     try {
         const userId = req.params.id;
-        console.log('userId: ', userId);
         const user = await userModel.getUserById(userId);
 
         if (!user) {
