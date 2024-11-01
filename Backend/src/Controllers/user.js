@@ -1,6 +1,8 @@
 const UserModel = require('../Model/userModel');
 const { OAuth2Client } = require('google-auth-library');
 const jwt = require('jsonwebtoken');
+const axios = require('axios');
+
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const userModel = new UserModel();
@@ -68,27 +70,39 @@ console.log('email: ', email);
     }
 };
 
+
 const googleLogin = async (req, res) => {
     try {
-        const { token } = req.body; 
+        // console.log('Google login request:', req.body.data);
+        
+        
+        const { code } = req.body;
+        console.log('Google login request111111111111111111:', code);
+        const tokenResponse = await axios.post('https://oauth2.googleapis.com/token', {
+            code,
+            client_id: process.env.GOOGLE_CLIENT_ID,
+            client_secret: process.env.GOOGLE_CLIENT_SECRET,
+            redirect_uri: process.env.REDIRECT_URI,  
+            grant_type: 'authorization_code',
+        });
+
+        const { id_token, access_token } = tokenResponse.data;
         const ticket = await client.verifyIdToken({
-            idToken: token,
+            idToken: id_token,
             audience: process.env.GOOGLE_CLIENT_ID,
         });
 
         const payload = ticket.getPayload();
         const { sub: googleId, email, name } = payload;
 
-      
         let user = await userModel.findUserByEmail(email);
-        
-        
+
         if (!user) {
             user = await userModel.createUser({
                 id: googleId,
                 name,
                 email,
-                password: null, 
+                password: null,
                 age: null,
                 taskId: [],
                 projectId: [],
@@ -96,11 +110,11 @@ const googleLogin = async (req, res) => {
             });
         }
 
-
         const jwtToken = jwt.sign({ id: user.id, email: user.email }, secretKey, { expiresIn: '1h' });
 
         res.status(200).send({ message: 'Login successful', token: jwtToken });
     } catch (error) {
+        console.error('Google login failed:', error);
         res.status(500).send({ message: 'Google login failed', error });
     }
 };

@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect  } from 'react';
 import { View, TextInput, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage'; 
-import { googleLogin } from '../api/googleAPI'; 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Google from 'expo-auth-session/providers/google';
+import { googleLogin } from '../api/googleAPI'; 
 import axios from '../api/backendAPI';
+import firebase from '../../firebaseConfig';
+
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -11,10 +13,27 @@ const LoginScreen = ({ navigation }) => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const [request, response, promptAsync] = Google.useAuthRequest({
-    expoClientId: 'YOUR_EXPO_CLIENT_ID',
-    androidClientId: 'YOUR_ANDROID_CLIENT_ID',
-    iosClientId: 'YOUR_IOS_CLIENT_ID',
+    androidClientId: '485232347458-98sovcd93k1s4qd599ppi5d6ohoe85tt.apps.googleusercontent.com',
   });
+  
+
+  const handleGoogleLogin = async () => {
+    try {
+      const result = await promptAsync();
+
+      if (result.type === 'success') {
+        const code = result.params.code;
+        const { token } = await googleLogin(code); 
+        await AsyncStorage.setItem('userToken', token); 
+        navigation.navigate('ProjectListScreen'); 
+      } else {
+        setErrorMessage('התחברות עם Google נכשלה.');
+      }
+    } catch (error) {
+      console.error("Error during Google login:", error);
+      setErrorMessage('שגיאה בהתחברות עם Google.');
+    }
+  };
 
   const handleLogin = async () => {
     try {
@@ -29,21 +48,15 @@ const LoginScreen = ({ navigation }) => {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    try {
-      const result = await promptAsync(); 
-      if (result.type === 'success') {
-        const { id_token } = result.params;
-        const { token } = await googleLogin(id_token); 
-        await AsyncStorage.setItem('userToken', token); 
-        navigation.navigate('ProjectListScreen'); 
-      } else {
-        setErrorMessage('התחברות עם Google נכשלה.');
-      }
-    } catch (error) {
-      setErrorMessage('שגיאה בהתחברות עם Google.');
-    }
-  };
+
+  
+
+  
+  
+  
+
+  
+  
 
   return (
     <View style={styles.container}>
@@ -52,10 +65,10 @@ const LoginScreen = ({ navigation }) => {
         placeholder="מייל"
         value={email}
         onChangeText={setEmail}
-        keyboardType="email-address" 
-        autoCapitalize="none" 
-        autoCorrect={false} 
-        returnKeyType="next" 
+        keyboardType="email-address"
+        autoCapitalize="none"
+        autoCorrect={false}
+        returnKeyType="next"
       />
       <TextInput
         style={styles.input}
@@ -84,29 +97,29 @@ const LoginScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center', 
-    alignItems: 'center', 
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#fff',
   },
   input: {
-    width: '80%', 
+    width: '80%',
     height: 40,
     borderColor: '#ccc',
     borderWidth: 1,
     marginBottom: 10,
     paddingHorizontal: 10,
     borderRadius: 5,
-    textAlign: 'center', 
+    textAlign: 'center',
   },
   error: {
     color: 'red',
     marginBottom: 10,
   },
   buttonImage: {
-    width: 200, 
+    width: 200,
     height: 50,
-    marginVertical: 10, 
-    borderRadius: 15, 
+    marginVertical: 10,
+    borderRadius: 15,
     overflow: 'hidden',
   },
 });

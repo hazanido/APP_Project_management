@@ -1,0 +1,7 @@
+<resources>
+  <string name="app_name">Frontend</string>
+  <string name="expo_splash_screen_resize_mode" translatable="false">contain</string>
+  <string name="expo_splash_screen_status_bar_translucent" translatable="false">false</string>
+  <string name="expo_system_ui_user_interface_style" translatable="false">light</string>
+  <string name="server_client_id">485232347458-1cgn99el60u4t7o5c53cppkp2hofuvmn.apps.googleusercontent.com</string>
+</resources>
