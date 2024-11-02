@@ -74,7 +74,7 @@ const ProjectDetailsScreen = ({ route, navigation }) => {
         </TouchableOpacity>
       )}
 
-      <TouchableOpacity onPress={() => navigation.navigate('SendNotificationScreen')}>
+      <TouchableOpacity onPress={() => navigation.navigate('SendMessageScreen')}>
         <Image source={require('../../assets/send_notification_he.png')} style={styles.buttonImage} />
       </TouchableOpacity>
     </View>

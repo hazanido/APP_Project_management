@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState,useEffect  } from 'react';
 import { View, TextInput, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Google from 'expo-auth-session/providers/google';
 import axios from '../api/backendAPI';
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -13,25 +14,94 @@ const LoginScreen = ({ navigation }) => {
   const [request, response, promptAsync] = Google.useAuthRequest({
     androidClientId: '485232347458-98sovcd93k1s4qd599ppi5d6ohoe85tt.apps.googleusercontent.com',
   });
-
+  
   useEffect(() => {
     GoogleSignin.configure({
       webClientId: '485232347458-erll3la836qnnbmavv066nus14t6f7d9.apps.googleusercontent.com',
       forceCodeForRefreshToken: true,
       scopes: ['profile', 'email'],
+
     });
   }, []);
-
+  
   const handleGoogleLogin = async () => {
-    // Existing Google login function
-  };
+    try {
+        await GoogleSignin.hasPlayServices();
+        const userInfo = await GoogleSignin.signIn();
+        console.log("User Info from Google:", userInfo);
+
+        if (!userInfo.data || !userInfo.data.user || !userInfo.data.user.email || !userInfo.data.user.name) {
+            console.error("User info is missing essential properties.");
+            setErrorMessage("שגיאה בקבלת פרטי המשתמש מ-Google.");
+            return;
+        }
+
+        const { email, name } = userInfo.data.user;
+        console.log("User email:", email);
+        console.log("User name:", name);
+
+        const checkUserExistence = async (email) => {
+            try {
+                const response = await axios.post('/users/login', { email, password: 'google_oauth' });
+                const { token, userId } = response.data;
+                await AsyncStorage.setItem('userToken', token);
+                await AsyncStorage.setItem('userId', userId);
+                console.log('User logged in successfully with Google:', email);
+                navigation.navigate('ProjectListScreen');
+                return true;
+            } catch (error) {
+                console.log('User does not exist, registering new user.');
+                return false;
+            }
+        };
+
+        const userExists = await checkUserExistence(email);
+        if (!userExists) {
+            try {
+                const response = await axios.post('/users/register', {
+                    name: name,
+                    email: email,
+                    password: 'google_oauth',
+                    age: 0,
+                });
+                console.log('User registered successfully:', response.data);
+
+                const loginResponse = await axios.post('/users/login', { email, password: 'google_oauth' });
+                const { token, userId } = loginResponse.data;
+                await AsyncStorage.setItem('userToken', token);
+                await AsyncStorage.setItem('userId', userId);
+                console.log('User logged in successfully after registration:', email);
+                navigation.navigate('ProjectListScreen');
+            } catch (error) {
+                console.error('Registration and login failed:', error.response?.data || error);
+                setErrorMessage('שגיאה בהרשמה או התחברות');
+            }
+        }
+    } catch (error) {
+        console.error("Error during Google login:", error);
+        setErrorMessage('שגיאה בהתחברות עם Google.');
+    }
+};
+
 
   const handleLogin = async () => {
-    // Existing handleLogin function
+    try {
+      const response = await axios.post('/users/login', { email, password });
+      const { token, userId } = response.data;
+      await AsyncStorage.setItem('userToken', token);
+      await AsyncStorage.setItem('userId', userId);
+      console.log('User logged in successfully:', response.data.email);
+      navigation.navigate('ProjectListScreen');
+    } catch (error) {
+      setErrorMessage('התחברות נכשלה. בדוק את פרטי הכניסה.');
+    }
   };
 
   return (
+
+    
     <View style={styles.container}>
+
       <Image 
         source={require('../../assets/logo1.png')} 
         style={styles.logo} 
@@ -78,11 +148,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
   },
-  logo: {
-    width: 300, 
-    height: 300, 
-    marginBottom: 50,
-  },
   input: {
     width: '80%',
     height: 40,
@@ -103,6 +168,11 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     borderRadius: 15,
     overflow: 'hidden',
+  },
+  logo: {
+    width: 300,
+    height: 300, 
+    marginBottom: 40,
   },
 });
 
