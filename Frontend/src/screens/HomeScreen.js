@@ -4,6 +4,10 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 const HomeScreen = ({ navigation }) => {
     return (
         <View style={styles.container}>
+            <Image 
+                source={require('../../assets/logo1.png')} 
+                style={styles.logo}
+            />
           
             <Text style={styles.title}>אפליקציה לניהול פרויקטים</Text>
 
@@ -25,6 +29,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#fff',
+    },
+    logo: {
+        width: 300, 
+        height: 300, 
+        marginBottom: 150,
     },
     title: {
         fontSize: 24,
