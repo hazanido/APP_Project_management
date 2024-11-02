@@ -75,7 +75,6 @@ const googleLogin = async (req, res) => {
     try {
         // console.log('Google login request:', req.body.data);
         
-        
         const { code } = req.body;
         console.log('Google login request111111111111111111:', code);
         const tokenResponse = await axios.post('https://oauth2.googleapis.com/token', {
@@ -85,7 +84,7 @@ const googleLogin = async (req, res) => {
             redirect_uri: process.env.REDIRECT_URI,  
             grant_type: 'authorization_code',
         });
-
+        console.log("testiiiiiii:",tokenResponse)
         const { id_token, access_token } = tokenResponse.data;
         const ticket = await client.verifyIdToken({
             idToken: id_token,

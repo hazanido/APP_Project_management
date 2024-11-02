@@ -12,29 +12,6 @@ const LoginScreen = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    androidClientId: '485232347458-98sovcd93k1s4qd599ppi5d6ohoe85tt.apps.googleusercontent.com',
-  });
-  
-
-  const handleGoogleLogin = async () => {
-    try {
-      const result = await promptAsync();
-
-      if (result.type === 'success') {
-        const code = result.params.code;
-        const { token } = await googleLogin(code); 
-        await AsyncStorage.setItem('userToken', token); 
-        navigation.navigate('ProjectListScreen'); 
-      } else {
-        setErrorMessage('התחברות עם Google נכשלה.');
-      }
-    } catch (error) {
-      console.error("Error during Google login:", error);
-      setErrorMessage('שגיאה בהתחברות עם Google.');
-    }
-  };
-
   const handleLogin = async () => {
     try {
       const response = await axios.post('/users/login', { email, password });
@@ -48,15 +25,6 @@ const LoginScreen = ({ navigation }) => {
     }
   };
 
-
-  
-
-  
-  
-  
-
-  
-  
 
   return (
     <View style={styles.container}>
