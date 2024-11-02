@@ -1,0 +1,38 @@
+{
+  "project_info": {
+    "project_number": "485232347458",
+    "project_id": "project-management-appli-ff008",
+    "storage_bucket": "project-management-appli-ff008.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:485232347458:android:cc7ce3b6a3d7e8912460db",
+        "android_client_info": {
+          "package_name": "ido445599.projectsync1.com"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "485232347458-98sovcd93k1s4qd599ppi5d6ohoe85tt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ido445599.projectsync1.com",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkO3se3UD5cZecGJZsEqOOl4FrEdoqKLk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
