@@ -110,6 +110,7 @@ const LoginScreen = ({ navigation }) => {
   } catch (error) {
     setErrorMessage('התחברות נכשלה. בדוק את פרטי הכניסה.');
   }
+   
 };
 
   return (
