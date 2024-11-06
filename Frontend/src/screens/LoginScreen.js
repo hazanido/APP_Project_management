@@ -85,6 +85,15 @@ const LoginScreen = ({ navigation }) => {
 
 
   const handleLogin = async () => {
+    const handleLogin = async () => {
+  // Regular expression to validate email format
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  // Check if the email is valid
+  if (!emailRegex.test(email)) {
+    setErrorMessage('כתובת המייל אינה תקינה.');
+    return;
+  }
     try {
       const response = await axios.post('/users/login', { email, password });
       const { token, userId } = response.data;
