@@ -84,8 +84,7 @@ const LoginScreen = ({ navigation }) => {
 };
 
 
-  const handleLogin = async () => {
-  
+ const handleLogin = async () => {
   // Regular expression to validate email format
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -93,23 +92,25 @@ const LoginScreen = ({ navigation }) => {
   if (!emailRegex.test(email)) {
     setErrorMessage('כתובת המייל אינה תקינה.');
     return;
+  }
 
-     if (password.trim() === '') {
+  // Check if the password is entered
+  if (password.trim() === '') {
     setErrorMessage('יש להכניס סיסמה.');
     return;
   }
+
+  try {
+    const response = await axios.post('/users/login', { email, password });
+    const { token, userId } = response.data;
+    await AsyncStorage.setItem('userToken', token);
+    await AsyncStorage.setItem('userId', userId);
+    console.log('User logged in successfully:', response.data.email);
+    navigation.navigate('ProjectListScreen');
+  } catch (error) {
+    setErrorMessage('התחברות נכשלה. בדוק את פרטי הכניסה.');
   }
-    try {
-      const response = await axios.post('/users/login', { email, password });
-      const { token, userId } = response.data;
-      await AsyncStorage.setItem('userToken', token);
-      await AsyncStorage.setItem('userId', userId);
-      console.log('User logged in successfully:', response.data.email);
-      navigation.navigate('ProjectListScreen');
-    } catch (error) {
-      setErrorMessage('התחברות נכשלה. בדוק את פרטי הכניסה.');
-    }
-  };
+};
 
   return (
 
