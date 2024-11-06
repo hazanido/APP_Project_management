@@ -1,15 +1,33 @@
 import React, { useState } from 'react';
-import { View, TextInput, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, TextInput, Text, Image, StyleSheet, TouchableOpacity, Alert, Platform, Button } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import axios from '../api/backendAPI'; 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CreateProjectScreen = ({ navigation }) => {
   const [projectName, setProjectName] = useState('');
   const [description, setDescription] = useState(''); 
-  const [startDate, setStartDate] = useState(''); 
-  const [endDate, setEndDate] = useState('');
+  const [startDate, setStartDate] = useState(new Date()); 
+  const [endDate, setEndDate] = useState(new Date());
   const [members, setMembers] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [showStartPicker, setShowStartPicker] = useState(false);
+  const [showEndPicker, setShowEndPicker] = useState(false);
+
+  const handleDateChange = (event, selectedDate, isStartDate) => {
+    const currentDate = selectedDate || (isStartDate ? startDate : endDate);
+    isStartDate ? setShowStartPicker(false) : setShowEndPicker(false);
+    
+    if (isStartDate) {
+      setStartDate(currentDate);
+    } else {
+      setEndDate(currentDate);
+    }
+  };
+
+  const formatDate = (date) => {
+    return date.toISOString().split('T')[0]; // פורמט YYYY-MM-DD
+  };
 
   const handleCreateProject = async () => {
     try {
@@ -21,8 +39,8 @@ const CreateProjectScreen = ({ navigation }) => {
         {
           name: projectName,
           description, 
-          startDate, 
-          endDate,
+          startDate: formatDate(startDate), 
+          endDate: formatDate(endDate),
           members: members ? members.split(',').map(member => member.trim()) : [], 
           managerId: userId, 
           tasks: [] 
@@ -58,18 +76,27 @@ const CreateProjectScreen = ({ navigation }) => {
         value={description} 
         onChangeText={setDescription}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="תאריך התחלה"
-        value={startDate} 
-        onChangeText={setStartDate}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="תאריך סיום"
-        value={endDate}
-        onChangeText={setEndDate}
-      />
+
+      <Button onPress={() => setShowStartPicker(true)} title={`בחר תאריך התחלה: ${formatDate(startDate)}`} />
+      {showStartPicker && (
+        <DateTimePicker
+          value={startDate}
+          mode="date"
+          display="default"
+          onChange={(e, date) => handleDateChange(e, date, true)}
+        />
+      )}
+
+      <Button onPress={() => setShowEndPicker(true)} title={`בחר תאריך סיום: ${formatDate(endDate)}`} />
+      {showEndPicker && (
+        <DateTimePicker
+          value={endDate}
+          mode="date"
+          display="default"
+          onChange={(e, date) => handleDateChange(e, date, false)}
+        />
+      )}
+
       <TextInput
         style={styles.input}
         placeholder="מייל של משתתפי הפרויקט (מופרדים בפסיקים)"
