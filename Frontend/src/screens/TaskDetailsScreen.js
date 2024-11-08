@@ -138,7 +138,7 @@ const TaskDetailsScreen = ({ route }) => {
   
   
       <TouchableOpacity onPress={addTaskToGoogleCalendar} style={styles.button}>
-        <Text style={styles.buttonText}>הוסף ליומן Google</Text>
+        <Text style={styles.buttonText}>הוסף ליומן</Text>
       </TouchableOpacity>
   
       {isManager && (
