@@ -15,13 +15,28 @@ const RegisterScreen = ({ navigation }) => {
         name,
         email,
         password,
-        age
+        age,
       });
+  
       console.log('User registered successfully:', response.data);
-      navigation.navigate('LoginScreen');
+      alert('ההרשמה בוצעה בהצלחה!'); 
+      navigation.navigate('LoginScreen'); 
     } catch (err) {
-      console.error('Registration failed:', err.response.data);
-      setError('הרשמה נכשלה, אנא בדוק את הפרטים שלך.');
+      if (err.response) {
+        const errorMessage = err.response.data.error;
+  
+        if (err.response.status === 400 && errorMessage === 'Email already exists.') {
+          setError('האימייל שהוזן כבר בשימוש, נסה אימייל אחר.');
+        } else if (err.response.status === 400) {
+          setError('פרטים לא תקינים, אנא בדוק את המידע שהוזן.');
+        } else {
+          setError('אירעה תקלה בעת הרישום, נסה שוב מאוחר יותר.');
+        }
+      } else {
+        
+        console.error('Registration failed:', err.message);
+        setError('שגיאה בחיבור לשרת. אנא נסה שוב.');
+      }
     }
   };
 
