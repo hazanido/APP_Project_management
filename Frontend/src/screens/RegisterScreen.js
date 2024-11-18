@@ -18,7 +18,6 @@ const RegisterScreen = ({ navigation }) => {
         age,
       });
   
-
       console.log('User registered successfully:', response.data);
       alert('ההרשמה בוצעה בהצלחה!'); 
       navigation.navigate('LoginScreen'); 
