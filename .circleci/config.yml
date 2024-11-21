@@ -18,10 +18,14 @@ jobs:
             echo "Setting Firebase environment variable"
             echo $FIREBASE_SERVICE_ACCOUNT > ./Backend/.env # יצירת קובץ env
       - run:
+          name: Fix Jest permissions
+          command: chmod +x ./Backend/node_modules/.bin/jest
+
+      - run:
           name: Run backend tests
           command: |
             echo "Running all tests"
-            npm --prefix ./Backend/ run test  
+            npx --prefix ./Backend/ jest --detectOpenHandles --forceExit
       - run:
           name: Check test results
           command: |
