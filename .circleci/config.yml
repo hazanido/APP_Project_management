@@ -25,7 +25,8 @@ jobs:
           name: Run backend tests
           command: |
             echo "Running all tests"
-            npx --prefix ./Backend/ jest --detectOpenHandles --forceExit
+            npx --prefix ./Backend/ jest --config ./Backend/jest.config.js --detectOpenHandles --forceExit
+
       - run:
           name: Check test results
           command: |
