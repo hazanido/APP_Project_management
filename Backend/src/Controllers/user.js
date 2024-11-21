@@ -40,7 +40,7 @@ const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
         
-console.log('email: ', email);
+        console.log('email: ', email);
         const user = await userModel.findUserByEmail(email);
         if (!user) {
             
