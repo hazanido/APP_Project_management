@@ -19,7 +19,18 @@ jobs:
             echo $FIREBASE_SERVICE_ACCOUNT > ./Backend/.env # יצירת קובץ env
       - run:
           name: Run backend tests
-          command: npm --prefix ./Backend/ run test  
+          command: |
+            echo "Running all tests"
+            npm --prefix ./Backend/ run test  
+      - run:
+          name: Check test results
+          command: |
+            if [ $? -ne 0 ]; then
+              echo "Tests failed. Exiting pipeline."
+              exit 1
+            else
+              echo "All tests passed successfully!"
+            fi
 
   deploy_backend:
     docker:
