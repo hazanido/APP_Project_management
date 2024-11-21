@@ -34,7 +34,7 @@ const EditProjectScreen = ({ route, navigation }) => {
         { ...project },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      Alert.alert('Success', 'Project updated successfully');
+      Alert.alert('Success', 'הפרטים נשמרו בהצלחה');
       navigation.goBack();
     } catch (error) {
       console.error('Error updating project:', error);
@@ -64,11 +64,11 @@ const EditProjectScreen = ({ route, navigation }) => {
 
             setProject({ ...project, members: [...project.members, newParticipant] });
             setNewParticipant('');
-            Alert.alert('Success', 'Participant added successfully');
+            Alert.alert('Success', 'המשתתף נוסף');
             
         } catch (error) {
             console.error('Error adding participant:', error);
-            Alert.alert('Error', 'Failed to add participant.');
+            Alert.alert('Error', 'ההוספה נכשלה.');
         }
     }
 };
@@ -95,7 +95,7 @@ const removeParticipant = async (participant) => {
             members: project.members.filter((item) => item !== participant),
         });
 
-        Alert.alert('Success', 'Participant removed successfully');
+        Alert.alert('Success', 'המשתמש הוסר בהצלחה');
     } catch (error) {
         console.error('Error removing participant from project:', error);
         Alert.alert('Error', 'Failed to remove participant from project.');

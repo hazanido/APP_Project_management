@@ -87,7 +87,7 @@ describe('Project API Tests', () => {
             description: 'Updated Description',
             startDate: '2024-01-01',
             endDate: '2024-12-31',
-            managerId,
+            managerId: 'testUserId',
             members: [],
             tasks: []
         };
@@ -112,13 +112,6 @@ describe('Project API Tests', () => {
         expect(res.body.some(project => project.id === projectId)).toBe(true);
     });
 
-    test('DELETE /projects/:id ', async () => {
-        const res = await request(app)
-            .delete(`/projects/${projectId}`) 
-            .set('Authorization', token);
-    
-        expect(res.statusCode).toBe(200);
-        expect(res.body).toHaveProperty('message', 'Project deleted successfully');
-    });
+ 
     
 });

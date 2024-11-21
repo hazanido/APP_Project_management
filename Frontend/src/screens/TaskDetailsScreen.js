@@ -77,11 +77,11 @@ const TaskDetailsScreen = ({ route }) => {
         });
         console.log("Event added with ID:", eventId);
   
-        Alert.alert('הצלחה', 'המשימה נוספה ליומן Google');
+        Alert.alert('הצלחה', 'המשימה נוספה ליומן ');
       }
     } catch (error) {
       console.error('Error adding task to Google Calendar:', error);
-      Alert.alert('שגיאה', 'לא ניתן להוסיף את המשימה ליומן Google');
+      Alert.alert('שגיאה', 'לא ניתן להוסיף את המשימה ליומן ');
     }
   };
   

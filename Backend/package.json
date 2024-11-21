@@ -5,10 +5,11 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "echo \"No tests yet\"",
+    "test": "jest --detectOpenHandles --forceExit",
     "testuser": "jest --detectOpenHandles --forceExit ./tests/user.test.js",
     "testproject": "jest --detectOpenHandles --forceExit ./tests/project.test.js",
-    "testtask": "jest --detectOpenHandles --forceExit ./tests/task.test.js"
+    "testtask": "jest --detectOpenHandles --forceExit ./tests/task.test.js",
+    "testmessages": "jest --detectOpenHandles --forceExit ./tests/massage.test.js"
   },
   "keywords": [],
   "author": "ido and sharon",
