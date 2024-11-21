@@ -13,6 +13,9 @@ jobs:
           name: Install backend dependencies
           command: npm --prefix ./Backend/ install  
       - run:
+          name: Install Jest globally
+          command: npm install -g jest
+      - run:
           name: Set environment variables 
           command: |
             echo "Setting Firebase environment variable"
@@ -38,6 +41,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install backend dependencies for deployment
+          command: npm --prefix ./Backend/ install  
+      - run:
           name: Set environment variables for deployment 
           command: |
             echo "Setting Firebase environment variable for deployment"
@@ -54,4 +60,4 @@ workflows:
       - build_and_test_backend  
       - deploy_backend:
           requires:
-            - build_and_test_backend  
+            - build_and_test_backend
