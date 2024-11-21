@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "echo 'Skipping tests for now...'",
+    "test": "jest 'Skipping tests for now...'",
     "test1": "jest --detectOpenHandles --forceExit",
     "testuser": "jest --detectOpenHandles --forceExit ./tests/user.test.js",
     "testproject": "jest --detectOpenHandles --forceExit ./tests/project.test.js",
