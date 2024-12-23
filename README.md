@@ -1,7 +1,8 @@
 
 # ProjectSync
 ![ProjectSync Logo](https://github.com/user-attachments/assets/0c9b5406-7f4a-4681-826a-8543c3803604)
-![Uploading logo.png…]()
+
+![logo](https://github.com/user-attachments/assets/61c74d58-11a1-49b2-98b3-a3fae0242b14)
 
 
 ## Overview
