@@ -1,6 +1,6 @@
 
 # ProjectSync
-![ProjectSync Logo](https://github.com/user-attachments/assets/0c9b5406-7f4a-4681-826a-8543c3803604)
+
 ## Overview
 ProjectSync is a comprehensive project management tool designed to facilitate seamless team collaboration and task management. It leverages modern web and mobile technologies to provide a real-time, user-friendly platform for managing all aspects of a project.
 
