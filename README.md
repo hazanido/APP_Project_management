@@ -15,6 +15,8 @@ ProjectSync is a comprehensive project management tool designed to facilitate se
 - **Backend:** Node.js with Express framework, structured with controllers, models, routes, and middleware.
 - **Database:** Firebase, utilized for real-time data handling and storage.
 - **Hosting:** Render for deploying the backend services.
+- **Continuous Integration/Continuous Deployment (CI/CD):** CircleCI, used to automate builds, tests, and deployments, ensuring high-quality code and rapid iteration cycles.
+
 
 ## Project Structure
 - **Backend:** Contains the API logic, Firebase integration, and middleware.
